@@ -45,9 +45,15 @@ public class RatingController {
 
     @GetMapping("/getRatingByUserAndAudiotrack/{userId}/{audiotrackId}")
     public ResponseEntity<Rating> getRatingByUserAndAudiotrack(@PathVariable Long userId, @PathVariable Long audiotrackId) {
-        Optional<Rating> ratingData = ratingRepo.findByUserAndAudiotrack(userId, audiotrackId);
+        Optional<User> userData = userRepo.findById(userId);
+        Optional<Audiotrack> audiotrackData = audiotrackRepo.findById(audiotrackId);
 
-        return ratingData.map(rating -> new ResponseEntity<>(rating, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        if (userData.isPresent() && audiotrackData.isPresent()) {
+            Optional<Rating> ratingData = ratingRepo.findByUserAndAudiotrack(userData.get(), audiotrackData.get());
+            return ratingData.map(rating -> new ResponseEntity<>(rating, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        }
+
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/addRating")
@@ -58,14 +64,19 @@ public class RatingController {
 
     @PutMapping("/updateRatingByUserAndAudiotrack/{userId}/{audiotrackId}")
     public ResponseEntity<Rating> updateRatingByUserAndAudiotrack(@PathVariable Long userId, @PathVariable Long audiotrackId, @RequestBody Rating newRatingData) {
-        Optional<Rating> ratingData = ratingRepo.findByUserAndAudiotrack(userId, audiotrackId);
+        Optional<User> userData = userRepo.findById(userId);
+        Optional<Audiotrack> audiotrackData = audiotrackRepo.findById(audiotrackId);
 
-        if (ratingData.isPresent()) {
-            Rating updatedRatingData = ratingData.get();
-            updatedRatingData.setRating(newRatingData.getRating());
+        if (userData.isPresent() && audiotrackData.isPresent()) {
+            Optional<Rating> ratingData = ratingRepo.findByUserAndAudiotrack(userData.get(), audiotrackData.get());
 
-            Rating ratingObject = ratingRepo.save(updatedRatingData);
-            return new ResponseEntity<>(ratingObject, HttpStatus.OK);
+            if (ratingData.isPresent()) {
+                Rating updatedRatingData = ratingData.get();
+                updatedRatingData.setRating(newRatingData.getRating());
+
+                Rating ratingObject = ratingRepo.save(updatedRatingData);
+                return new ResponseEntity<>(ratingObject, HttpStatus.OK);
+            }
         }
 
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -75,8 +86,13 @@ public class RatingController {
     public ResponseEntity<HttpStatus> deleteRatingByUserAndAudiotrack(@PathVariable Long userId, @PathVariable Long audiotrackId) {
         Optional<User> userData = userRepo.findById(userId);
         Optional<Audiotrack> audiotrackData = audiotrackRepo.findById(audiotrackId);
-        RatingId ratingId = new RatingId(userData.orElse(null), audiotrackData.orElse(null));
-        ratingRepo.deleteById(ratingId);
-        return new ResponseEntity<>(HttpStatus.OK);
+
+        if (userData.isPresent() && audiotrackData.isPresent()) {
+            RatingId ratingId = new RatingId(userData.get(), audiotrackData.get());
+            ratingRepo.deleteById(ratingId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }
