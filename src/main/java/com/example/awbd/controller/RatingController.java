@@ -2,10 +2,10 @@ package com.example.awbd.controller;
 
 import com.example.awbd.model.Rating;
 import com.example.awbd.model.RatingId;
-import com.example.awbd.model.User;
+import com.example.awbd.model.Utilizator;
 import com.example.awbd.model.Audiotrack;
 import com.example.awbd.repo.RatingRepo;
-import com.example.awbd.repo.UserRepo;
+import com.example.awbd.repo.UtilizatorRepo;
 import com.example.awbd.repo.AudiotrackRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,7 +23,7 @@ public class RatingController {
     private RatingRepo ratingRepo;
 
     @Autowired
-    private UserRepo userRepo;
+    private UtilizatorRepo utilizatorRepo;
 
     @Autowired
     private AudiotrackRepo audiotrackRepo;
@@ -43,13 +43,13 @@ public class RatingController {
         }
     }
 
-    @GetMapping("/getRatingByUserAndAudiotrack/{userId}/{audiotrackId}")
-    public ResponseEntity<Rating> getRatingByUserAndAudiotrack(@PathVariable Long userId, @PathVariable Long audiotrackId) {
-        Optional<User> userData = userRepo.findById(userId);
+    @GetMapping("/getRatingByUtilizatorAndAudiotrack/{utilizatorId}/{audiotrackId}")
+    public ResponseEntity<Rating> getRatingByUtilizatorAndAudiotrack(@PathVariable Long utilizatorId, @PathVariable Long audiotrackId) {
+        Optional<Utilizator> utilizatorData = utilizatorRepo.findById(utilizatorId);
         Optional<Audiotrack> audiotrackData = audiotrackRepo.findById(audiotrackId);
 
-        if (userData.isPresent() && audiotrackData.isPresent()) {
-            Optional<Rating> ratingData = ratingRepo.findByUserAndAudiotrack(userData.get(), audiotrackData.get());
+        if (utilizatorData.isPresent() && audiotrackData.isPresent()) {
+            Optional<Rating> ratingData = ratingRepo.findByUtilizatorAndAudiotrack(utilizatorData.get(), audiotrackData.get());
             return ratingData.map(rating -> new ResponseEntity<>(rating, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
         }
 
@@ -62,13 +62,13 @@ public class RatingController {
         return new ResponseEntity<>(ratingObject, HttpStatus.OK);
     }
 
-    @PutMapping("/updateRatingByUserAndAudiotrack/{userId}/{audiotrackId}")
-    public ResponseEntity<Rating> updateRatingByUserAndAudiotrack(@PathVariable Long userId, @PathVariable Long audiotrackId, @RequestBody Rating newRatingData) {
-        Optional<User> userData = userRepo.findById(userId);
+    @PutMapping("/updateRatingByUtilizatorAndAudiotrack/{utilizatorId}/{audiotrackId}")
+    public ResponseEntity<Rating> updateRatingByUtilizatorAndAudiotrack(@PathVariable Long utilizatorId, @PathVariable Long audiotrackId, @RequestBody Rating newRatingData) {
+        Optional<Utilizator> utilizatorData = utilizatorRepo.findById(utilizatorId);
         Optional<Audiotrack> audiotrackData = audiotrackRepo.findById(audiotrackId);
 
-        if (userData.isPresent() && audiotrackData.isPresent()) {
-            Optional<Rating> ratingData = ratingRepo.findByUserAndAudiotrack(userData.get(), audiotrackData.get());
+        if (utilizatorData.isPresent() && audiotrackData.isPresent()) {
+            Optional<Rating> ratingData = ratingRepo.findByUtilizatorAndAudiotrack(utilizatorData.get(), audiotrackData.get());
 
             if (ratingData.isPresent()) {
                 Rating updatedRatingData = ratingData.get();
@@ -82,13 +82,13 @@ public class RatingController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @DeleteMapping("/deleteRatingByUserAndAudiotrack/{userId}/{audiotrackId}")
-    public ResponseEntity<HttpStatus> deleteRatingByUserAndAudiotrack(@PathVariable Long userId, @PathVariable Long audiotrackId) {
-        Optional<User> userData = userRepo.findById(userId);
+    @DeleteMapping("/deleteRatingByUtilizatorAndAudiotrack/{utilizatorId}/{audiotrackId}")
+    public ResponseEntity<HttpStatus> deleteRatingByUtilizatorAndAudiotrack(@PathVariable Long utilizatorId, @PathVariable Long audiotrackId) {
+        Optional<Utilizator> utilizatorData = utilizatorRepo.findById(utilizatorId);
         Optional<Audiotrack> audiotrackData = audiotrackRepo.findById(audiotrackId);
 
-        if (userData.isPresent() && audiotrackData.isPresent()) {
-            RatingId ratingId = new RatingId(userData.get(), audiotrackData.get());
+        if (utilizatorData.isPresent() && audiotrackData.isPresent()) {
+            RatingId ratingId = new RatingId(utilizatorData.get(), audiotrackData.get());
             ratingRepo.deleteById(ratingId);
             return new ResponseEntity<>(HttpStatus.OK);
         }

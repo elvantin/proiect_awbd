@@ -6,20 +6,20 @@ import lombok.*;
 import java.util.List;
 
 @Entity
-@Table(name = "user")
+@Table(name = "utilizator")
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
 @Getter
 @ToString
-public class User {
+public class Utilizator {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name = "username")
-    private String username;
+    @Column(name = "utilizator")
+    private String utilizator;
 
     @Column(name = "nume")
     private String nume;
@@ -33,6 +33,6 @@ public class User {
     @Column(name = "parola")
     private String parola;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "utilizator", cascade = CascadeType.ALL)
     private List<Rating> ratings;
 }
