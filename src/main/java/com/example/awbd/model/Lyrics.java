@@ -19,7 +19,7 @@ public class Lyrics {
     @NotNull
     private Long id;
 
-    @Column(name = "lyrics", columnDefinition = "NVARCHAR(MAX)")
+    @Column(name = "lyrics", columnDefinition = "TEXT")
     private String lyrics;
 
     @OneToOne(fetch = FetchType.LAZY)

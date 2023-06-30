@@ -30,7 +30,7 @@ public class Audiotrack {
     private AudioAlbum album;
 
     @Column(name = "durata")
-    private int durata;
+    private String durata;
 
     @OneToOne(mappedBy = "audiotrack", cascade = CascadeType.ALL)
     private Lyrics lyrics;
