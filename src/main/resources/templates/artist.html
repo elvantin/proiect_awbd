@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Artist Details</title>
+</head>
+<body>
+<h1>Artist Details</h1>
+<p>ID: <span th:text="${artist.id}"></span></p>
+<p>Name: <span th:text="${artist.nume}"></span></p>
+<form method="post" th:action="@{/updateArtistById/{id}(id=${artist.id})}">
+    <input type="text" name="nume" th:value="${artist.nume}" required/>
+    <button type="submit">Update Artist</button>
+</form>
+<form method="post" th:action="@{/deleteArtistById/{id}(id=${artist.id})}">
+    <button type="submit">Delete Artist</button>
+</form>
+</body>
+</html>

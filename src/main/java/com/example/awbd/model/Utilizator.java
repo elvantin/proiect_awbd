@@ -7,8 +7,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "utilizator")
-@NoArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor(force = true)
 @Setter
 @Getter
 @ToString
@@ -35,4 +34,12 @@ public class Utilizator {
 
     @OneToMany(mappedBy = "utilizator", cascade = CascadeType.ALL)
     private List<Rating> ratings;
-}
+    public Utilizator(Long id, String utilizator, String nume, String prenume, String email, String parola) {
+        this.id = id;
+        this.utilizator = utilizator;
+        this.nume = nume;
+        this.prenume = prenume;
+        this.email = email;
+        this.parola = parola;
+    }
+  }

@@ -5,6 +5,8 @@ import lombok.*;
 
 import org.antlr.v4.runtime.misc.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonBackReference; // Importăm adnotarea
+
 @Entity
 @Table(name = "audioalbum")
 @NoArgsConstructor
@@ -30,5 +32,6 @@ public class AudioAlbum {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_artist", referencedColumnName = "id", insertable = false, updatable = false)
+    @JsonBackReference // Adăugăm această adnotare pentru a gestiona relația bidirecțională
     private Artist artist;
 }

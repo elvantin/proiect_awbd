@@ -1,15 +1,15 @@
 package com.example.awbd.controller;
 
-        import com.example.awbd.model.Artist;
-        import com.example.awbd.repo.ArtistRepo;
-        import org.springframework.beans.factory.annotation.Autowired;
-        import org.springframework.http.HttpStatus;
-        import org.springframework.http.ResponseEntity;
-        import org.springframework.web.bind.annotation.*;
+import com.example.awbd.model.Artist;
+import com.example.awbd.repo.ArtistRepo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-        import java.util.ArrayList;
-        import java.util.List;
-        import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class ArtistController {
@@ -25,6 +25,7 @@ public class ArtistController {
             if (artistList.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
+
             return new ResponseEntity<>(artistList, HttpStatus.OK);
 
         } catch (Exception ex) {
@@ -36,7 +37,8 @@ public class ArtistController {
     public ResponseEntity<Artist> getArtistById(@PathVariable Long id) {
         Optional<Artist> artistData = artistRepo.findById(id);
 
-        return artistData.map(artist -> new ResponseEntity<>(artist, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return artistData.map(artist -> new ResponseEntity<>(artist, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping("/addArtist")
