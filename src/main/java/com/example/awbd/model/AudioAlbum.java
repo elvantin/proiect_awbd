@@ -1,5 +1,6 @@
 package com.example.awbd.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -32,6 +33,7 @@ public class AudioAlbum {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_artist", referencedColumnName = "id", insertable = false, updatable = false)
+    @JsonIgnore
     @JsonBackReference // Adăugăm această adnotare pentru a gestiona relația bidirecțională
     private Artist artist;
 }

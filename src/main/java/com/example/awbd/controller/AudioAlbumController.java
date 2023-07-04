@@ -12,12 +12,13 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/audioAlbums")
 public class AudioAlbumController {
 
     @Autowired
     private AudioAlbumRepo audioAlbumRepo;
 
-    @GetMapping("/getAllAudioAlbums")
+    @GetMapping
     public ResponseEntity<List<AudioAlbum>> getAllAudioAlbums() {
         try {
             List<AudioAlbum> audioAlbumList = new ArrayList<>(audioAlbumRepo.findAll());
@@ -32,20 +33,24 @@ public class AudioAlbumController {
         }
     }
 
-    @GetMapping("/getAudioAlbumById/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<AudioAlbum> getAudioAlbumById(@PathVariable Long id) {
         Optional<AudioAlbum> audioAlbumData = audioAlbumRepo.findById(id);
 
         return audioAlbumData.map(audioAlbum -> new ResponseEntity<>(audioAlbum, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PostMapping("/addAudioAlbum")
+    @PostMapping
     public ResponseEntity<AudioAlbum> addAudioAlbum(@RequestBody AudioAlbum audioAlbum) {
-        AudioAlbum audioAlbumObject = audioAlbumRepo.save(audioAlbum);
-        return new ResponseEntity<>(audioAlbumObject, HttpStatus.OK);
+        try {
+            AudioAlbum audioAlbumObject = audioAlbumRepo.save(audioAlbum);
+            return new ResponseEntity<>(audioAlbumObject, HttpStatus.CREATED);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    @PostMapping("/updateAudioAlbumById/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<AudioAlbum> updateAudioAlbumById(@PathVariable Long id, @RequestBody AudioAlbum newAudioAlbumData) {
         Optional<AudioAlbum> oldAlbumData = audioAlbumRepo.findById(id);
 
@@ -62,9 +67,13 @@ public class AudioAlbumController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @DeleteMapping("/deleteAudioAlbumById/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteAudioAlbumById(@PathVariable Long id) {
-        audioAlbumRepo.deleteById(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        try {
+            audioAlbumRepo.deleteById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

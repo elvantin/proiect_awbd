@@ -12,12 +12,13 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/lyrics")
 public class LyricsController {
 
     @Autowired
     private LyricsRepo lyricsRepo;
 
-    @GetMapping("/getAllLyrics")
+    @GetMapping
     public ResponseEntity<List<Lyrics>> getAllLyrics() {
         try {
             List<Lyrics> lyricsList = new ArrayList<>(lyricsRepo.findAll());
@@ -25,27 +26,33 @@ public class LyricsController {
             if (lyricsList.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
-            return new ResponseEntity<>(lyricsList, HttpStatus.OK);
+
+            return ResponseEntity.ok(lyricsList);
 
         } catch (Exception ex) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @GetMapping("/getLyricsById/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Lyrics> getLyricsById(@PathVariable Long id) {
         Optional<Lyrics> lyricsData = lyricsRepo.findById(id);
 
-        return lyricsData.map(lyrics -> new ResponseEntity<>(lyrics, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return lyricsData.map(ResponseEntity::ok)
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PostMapping("/addLyrics")
+    @PostMapping
     public ResponseEntity<Lyrics> addLyrics(@RequestBody Lyrics lyrics) {
-        Lyrics lyricsObject = lyricsRepo.save(lyrics);
-        return new ResponseEntity<>(lyricsObject, HttpStatus.OK);
+        try {
+            Lyrics lyricsObject = lyricsRepo.save(lyrics);
+            return ResponseEntity.status(HttpStatus.CREATED).body(lyricsObject);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    @PostMapping("/updateLyricsById/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Lyrics> updateLyricsById(@PathVariable Long id, @RequestBody Lyrics newLyricsData) {
         Optional<Lyrics> oldLyricsData = lyricsRepo.findById(id);
 
@@ -55,15 +62,19 @@ public class LyricsController {
             updatedLyricsData.setAudiotrack(newLyricsData.getAudiotrack());
 
             Lyrics lyricsObject = lyricsRepo.save(updatedLyricsData);
-            return new ResponseEntity<>(lyricsObject, HttpStatus.OK);
+            return ResponseEntity.ok(lyricsObject);
         }
 
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @DeleteMapping("/deleteLyricsById/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteLyricsById(@PathVariable Long id) {
-        lyricsRepo.deleteById(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        try {
+            lyricsRepo.deleteById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

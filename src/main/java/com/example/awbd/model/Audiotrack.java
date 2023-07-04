@@ -1,5 +1,7 @@
 package com.example.awbd.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,6 +14,7 @@ import java.util.List;
 @Setter
 @Getter
 @ToString
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
 public class Audiotrack {
 
     @Id
@@ -20,6 +23,7 @@ public class Audiotrack {
 
     @ManyToOne
     @JoinColumn(name = "id_artist")
+    @JsonIgnore
     private Artist artist;
 
     @Column(name = "titlu_piesa")
@@ -27,11 +31,13 @@ public class Audiotrack {
 
     @ManyToOne
     @JoinColumn(name = "id_album")
+    @JsonIgnore
     private AudioAlbum album;
 
     @Column(name = "durata")
     private String durata;
 
     @OneToOne(mappedBy = "audiotrack", cascade = CascadeType.ALL)
+    @JsonIgnore
     private Lyrics lyrics;
 }

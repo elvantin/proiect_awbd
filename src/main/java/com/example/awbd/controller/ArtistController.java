@@ -12,12 +12,13 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/artists")
 public class ArtistController {
 
     @Autowired
     private ArtistRepo artistRepo;
 
-    @GetMapping("/getAllArtists")
+    @GetMapping
     public ResponseEntity<List<Artist>> getAllArtists() {
         try {
             List<Artist> artistList = new ArrayList<>(artistRepo.findAll());
@@ -33,7 +34,7 @@ public class ArtistController {
         }
     }
 
-    @GetMapping("/getArtistById/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Artist> getArtistById(@PathVariable Long id) {
         Optional<Artist> artistData = artistRepo.findById(id);
 
@@ -41,13 +42,18 @@ public class ArtistController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PostMapping("/addArtist")
+    @PostMapping
     public ResponseEntity<Artist> addArtist(@RequestBody Artist artist) {
-        Artist artistObject = artistRepo.save(artist);
-        return new ResponseEntity<>(artistObject, HttpStatus.OK);
+        try {
+            artist.setId(null);  // asigură-te că id-ul este null
+            Artist artistObject = artistRepo.save(artist);
+            return new ResponseEntity<>(artistObject, HttpStatus.CREATED);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    @PostMapping("/updateArtistById/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Artist> updateArtistById(@PathVariable Long id, @RequestBody Artist newArtistData) {
         Optional<Artist> oldArtistData = artistRepo.findById(id);
 
@@ -62,9 +68,13 @@ public class ArtistController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @DeleteMapping("/deleteArtistById/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteArtistById(@PathVariable Long id) {
-        artistRepo.deleteById(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        try {
+            artistRepo.deleteById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

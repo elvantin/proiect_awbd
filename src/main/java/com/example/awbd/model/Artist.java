@@ -26,11 +26,11 @@ public class Artist {
     @Column(name = "nume")
     private String nume;
 
-    @OneToMany(mappedBy = "artist", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "artist", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore // Ignoră serializarea câmpului audioAlbums
     private List<AudioAlbum> audioAlbums;
 
-    @OneToMany(mappedBy = "artist", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "artist", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore // Ignoră serializarea câmpului audiotracks
     private List<Audiotrack> audiotracks;
 
