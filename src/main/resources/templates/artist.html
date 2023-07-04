@@ -1,19 +1,41 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Artist Details</title>
+    <title>Artist</title>
 </head>
 <body>
-<h1>Artist Details</h1>
-<p>ID: <span th:text="${artist.id}"></span></p>
-<p>Name: <span th:text="${artist.nume}"></span></p>
-<form method="post" th:action="@{/updateArtistById/{id}(id=${artist.id})}">
-    <input type="text" name="nume" th:value="${artist.nume}" required/>
-    <button type="submit">Update Artist</button>
+<h1>Artist</h1>
+
+<!-- Formular pentru adăugare artist -->
+<h2>Adăugare artist:</h2>
+<form th:action="@{/artists}" th:object="${artist}" method="post">
+    <label>Nume:</label>
+    <input type="text" th:field="*{nume}" required>
+    <button type="submit">Adăugare</button>
 </form>
-<form method="post" th:action="@{/deleteArtistById/{id}(id=${artist.id})}">
-    <button type="submit">Delete Artist</button>
-</form>
+
+<!-- Lista de artiști -->
+<h2>Listă artiști:</h2>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Nume</th>
+        <th>Acțiuni</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="artist : ${artists}">
+        <td th:text="${artist.id}"></td>
+        <td th:text="${artist.nume}"></td>
+        <td>
+            <a th:href="@{/artists/{id}(id=${artist.id})}">Detalii</a>
+            <a th:href="@{/artists/{id}/edit(id=${artist.id})}">Editare</a>
+            <a th:href="@{/artists/{id}/delete(id=${artist.id})}">Ștergere</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
 </body>
 </html>

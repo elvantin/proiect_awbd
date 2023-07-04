@@ -1,12 +1,9 @@
 package com.example.awbd.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
-import org.antlr.v4.runtime.misc.NotNull;
-
+import org.springframework.validation.annotation.Validated;
 import java.util.List;
 
 @Entity
@@ -16,25 +13,24 @@ import java.util.List;
 @Setter
 @Getter
 @ToString
+@Validated
 public class Artist {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @NotNull
     private Long id;
 
-    @Column(name = "nume")
     private String nume;
 
     @OneToMany(mappedBy = "artist", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore // Ignoră serializarea câmpului audioAlbums
     private List<AudioAlbum> audioAlbums;
 
     @OneToMany(mappedBy = "artist", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore // Ignoră serializarea câmpului audiotracks
     private List<Audiotrack> audiotracks;
 
     public Artist(String nume) {
         this.nume = nume;
     }
 }
+
+

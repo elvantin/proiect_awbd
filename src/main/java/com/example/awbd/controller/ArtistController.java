@@ -5,6 +5,8 @@ import com.example.awbd.repo.ArtistRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -43,7 +45,11 @@ public class ArtistController {
     }
 
     @PostMapping
-    public ResponseEntity<Artist> addArtist(@RequestBody Artist artist) {
+    public ResponseEntity<Artist> addArtist(@Validated @RequestBody Artist artist, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
         try {
             artist.setId(null);  // asigură-te că id-ul este null
             Artist artistObject = artistRepo.save(artist);
@@ -78,3 +84,6 @@ public class ArtistController {
         }
     }
 }
+
+
+
