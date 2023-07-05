@@ -1,6 +1,6 @@
 package com.example.awbd.config;
 
-import com.example.awbd.services.security.JpaUserDetailsService;
+import com.example.awbd.services.security.H2UserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,6 +24,12 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Profile("h2")
 public class SecurityConfigH2 {
 
+    private final H2UserDetailsService userDetailsService;
+
+    public SecurityConfigH2(H2UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -46,12 +52,27 @@ public class SecurityConfigH2 {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
+                //.csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
+                .csrf().disable()
+                .cors().disable()
+                .exceptionHandling().and()
                 .authorizeRequests(auth -> auth
-                        .requestMatchers("/h2-console/**").permitAll()
-                        .requestMatchers("/products/**").permitAll()
-                        .anyRequest().authenticated()
+                                .requestMatchers("/h2-console/**").hasRole("ADMIN")
+                                .requestMatchers("/artists").authenticated()
+                                .requestMatchers("/audioAlbums").authenticated()
+                                .requestMatchers("/audiotracks").authenticated()
+                                //.requestMatchers("/h2-console").hasRole("ADMIN")
+                                .requestMatchers("/lyrics").authenticated()
+                                .requestMatchers("/login").permitAll()
+                                .requestMatchers("/main/**").authenticated()
+                        //.anyRequest().authenticated()
                 )
+                .userDetailsService(userDetailsService)
+                //.authorizeRequests(auth -> auth
+                //        .requestMatchers("/h2-console/**").permitAll()
+                //        .requestMatchers("/main/**").permitAll()
+                //        .anyRequest().authenticated()
+                //)
                 .headers(headers -> headers.frameOptions().sameOrigin())
                 .httpBasic(withDefaults())
                 .build();

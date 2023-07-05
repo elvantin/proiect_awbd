@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
+@RequestMapping("/main")
 public class MainController {
 
     @GetMapping("/login")
@@ -18,7 +19,7 @@ public class MainController {
         return "accessDenied";
     }
 
-    @RequestMapping({"", "/", "/auction"})
+    @RequestMapping({"", "/"})
     public ModelAndView getHome() {
         return new ModelAndView("main");
     }

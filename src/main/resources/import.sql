@@ -1,8 +1,8 @@
-INSERT INTO artist (id, nume) VALUES (1, 'Iron Maiden');
-INSERT INTO artist (id, nume) VALUES (2, 'Metallica');
-INSERT INTO artist (id, nume) VALUES (3, 'Black Sabbath');
-INSERT INTO artist (id, nume) VALUES (4, 'AC/DC');
-INSERT INTO artist (id, nume) VALUES (5, 'Megadeth');
+INSERT INTO artist (nume) VALUES ('Iron Maiden');
+INSERT INTO artist (nume) VALUES ('Metallica');
+INSERT INTO artist (nume) VALUES ('Black Sabbath');
+INSERT INTO artist (nume) VALUES ('AC/DC');
+INSERT INTO artist (nume) VALUES ('Megadeth');
 
 INSERT INTO audioalbum (id, titlu_album, id_artist, an) VALUES (1, 'The Number of the Beast', 1, 1982);
 INSERT INTO audioalbum (id, titlu_album, id_artist, an) VALUES (2, 'Powerslave', 1, 1984);

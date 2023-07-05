@@ -5,6 +5,7 @@ import com.example.awbd.repo.ArtistRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -45,6 +46,7 @@ public class ArtistController {
     }
 
     @PostMapping
+    //@PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Artist> addArtist(@Validated @RequestBody Artist artist, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
