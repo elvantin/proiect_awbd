@@ -1,28 +1,169 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ro" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>All Artists</title>
+  <title>Rock JukeBox</title>
+  <link rel="stylesheet" href="/webjars/bootstrap/4.5.0/css/bootstrap.min.css"/>
+  <script src="/webjars/jquery/3.5.1/jquery.min.js"></script>
+  <script src="/webjars/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="/webjars/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="/resources/static/css/custom.css"/>
+  <style>
+    .teal-bar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #dafda6;
+      margin-bottom: 10px;
+    }
+    .teal-bar a {
+      display: inline-block;
+      color: #131e75;
+      padding: 10px;
+    }
+    .teal-bar a:hover {
+      background-color: #ff8c00;
+    }
+    .teal-bar i {
+      margin-right: 5px;
+    }
+    .title {
+      color: purple;
+      text-align: center;
+    }
+    .description {
+      text-align: center;
+    }
+    .subtitle {
+      color: red;
+      text-align: center;
+    }
+    .card-table {
+      width: 300px;
+      margin: 0 auto;
+      perspective: 800px;
+    }
+    .card-table .card {
+      position: relative;
+      transform-style: preserve-3d;
+      transform: rotateX(0deg);
+      transition: transform 0.5s;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
+    }
+    .card-table .card:hover {
+      transform: rotateX(10deg);
+    }
+    .card-table .card .card-body {
+      padding: 10px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 8px;
+      border: 1px solid #ccc;
+    }
+  </style>
+
+  <script>
+    $(document).ready(function() {
+
+      $('.edit-artist').click(function() {
+        var artistId = $(this).attr('data-id');
+        var artistName = $(this).text();
+        var newName = prompt('Introduceți noul nume pentru artist:', artistName);
+        if (newName !== null && newName !== '') {
+          var formData = new FormData();
+          formData.append('nume', newName);
+
+          $.ajax({
+            url: '/admin-artists/update/' + artistId,
+            type: 'PUT', // Modifică tipul de cerere în PUT
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+              if (response === 'success') {
+                $('.artist-name[data-id="' + artistId + '"]').text(newName);
+              } else {
+                alert('A apărut o eroare la modificarea artistului.');
+              }
+            },
+            error: function() {
+              alert('A apărut o eroare la modificarea artistului.');
+            }
+          });
+        }
+      });
+
+      $('.delete-button').click(function() {
+        var artistId = $(this).attr('data-id');
+        if (confirm('Sigur doriți să ștergeți acest artist?')) {
+          $.ajax({
+            url: '/admin-artists/delete/' + artistId,
+            type: 'POST',
+            success: function(response) {
+              if (response === 'success') {
+                $('.artist-name[data-id="' + artistId + '"]').closest('tr').remove();
+              } else {
+                alert('A apărut o eroare la ștergerea artistului.');
+              }
+            },
+            error: function() {
+              alert('A apărut o eroare la ștergerea artistului.');
+            }
+          });
+        }
+      });
+    });
+  </script>
 </head>
 <body>
-<h1>All Artists</h1>
-<table>
-  <thead>
-  <tr>
-    <th>ID</th>
-    <th>Name</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr th:each="artist : ${artists}">
-    <td th:text="${artist.id}"></td>
-    <td th:text="${artist.nume}"></td>
-  </tr>
-  </tbody>
-</table>
-<form method="post" action="/admin-artists/add">
-  <input type="text" name="nume" placeholder="Artist Name" required/>
-  <button type="submit">Add Artist</button>
-</form>
+<div class="container">
+  <div class="teal-bar">
+    <a class="nav-link" th:href="@{'/main'}" title="Acasă"> <i class="fas fa-couch mx-1"></i> Acasă </a>
+    <a class="nav-link" th:href="@{'/show-artists'}" title="Artiști"><i class="fas fa-users-between-lines"></i> Artiști</a>
+  </div>
+</div>
+<div class="container">
+  <h1 class="title">Rock JukeBox (zona admin)</h1>
+  <h2 class="subtitle">Administrare Artiști</h2>
+  <div class="card-table">
+    <div class="card">
+      <div class="card-body">
+        <table>
+          <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nume</th>
+            <th>Acțiuni</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="artist : ${artists}">
+            <td th:text="${artist.id}"></td>
+            <td class="artist-name" data-id="${artist.id}" th:text="${artist.nume}"></td>
+            <td>
+              <button class="btn btn-primary edit-artist" data-id="${artist.id}">Modificare</button>
+              <button class="btn btn-danger delete-button" data-id="${artist.id}">Ștergere</button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <form method="post" action="/admin-artists/add">
+          <input type="text" name="nume" placeholder="Nume Artist" required/>
+          <button type="submit">Adaugă Artist</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>
+
+
+
+
