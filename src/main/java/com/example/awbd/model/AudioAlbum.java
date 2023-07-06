@@ -18,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference; // Importăm adnotare
 public class AudioAlbum {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @NotNull
     private Long id;
 

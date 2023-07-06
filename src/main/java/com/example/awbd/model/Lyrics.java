@@ -15,7 +15,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 public class Lyrics {
 
     @Id
-//    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @NotNull
     private Long id;
 
