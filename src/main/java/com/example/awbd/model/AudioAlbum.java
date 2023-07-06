@@ -36,4 +36,9 @@ public class AudioAlbum {
     @JsonIgnore
     @JsonBackReference // Adăugăm această adnotare pentru a gestiona relația bidirecțională
     private Artist artist;
+
+    public AudioAlbum(String titlu_album, Artist artist) {
+        this.titlu_album = titlu_album;
+        this.artist = artist;
+    }
 }

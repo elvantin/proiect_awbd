@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Admin - Audio Albums</title>
+</head>
+<body>
+<h1>Audio Albums Administration</h1>
+<table>
+  <thead>
+  <tr>
+    <th>Id</th>
+    <th>Title</th>
+    <th>Artist Id</th>
+    <th>Delete</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="audioAlbum : ${audioAlbums}">
+    <td th:text="${audioAlbum.id}"></td>
+    <td th:text="${audioAlbum.titlu_album}"></td>
+    <td th:text="${audioAlbum.id_artist}"></td>
+    <td>
+      <form th:action="@{/admin/audioAlbums/delete}" th:object="${audioAlbum}" method="post">
+        <input th:value="${audioAlbum.id}" th:name="id" type="hidden">
+        <button type="submit">Delete</button>
+      </form>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+<h2>Add new Audio Album</h2>
+<form th:action="@{/admin/audioAlbums}" th:object="${newAudioAlbum}" method="post">
+  <input th:field="*{titlu_album}" placeholder="Title" required>
+  <input th:field="*{id_artist}" placeholder="Artist Id" required>
+  <button type="submit">Add</button>
+</form>
+</body>
+</html>
