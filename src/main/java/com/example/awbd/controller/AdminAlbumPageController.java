@@ -44,9 +44,11 @@ public class AdminAlbumPageController {
         return modelAndView;
     }
 
-      @PostMapping("/delete")
-    public String deleteAudioAlbum(@RequestParam Long id) {
+    @PostMapping("/delete")
+    public ModelAndView deleteAudioAlbum(@RequestParam Long id) {
         audioAlbumRepo.deleteById(id);
-        return "redirect:/admin-audioalbums";
+        ModelAndView modelAndView = new ModelAndView("redirect:/admin-audioalbums");
+        return modelAndView;
     }
+
 }

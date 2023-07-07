@@ -101,27 +101,6 @@
         }
       });
 
-      $('.delete-button').click(function(event) {
-        event.stopPropagation();
-        var artistId = $(this).attr('data-id');
-        if (confirm('Sigur doriți să ștergeți acest artist?')) {
-          $.ajax({
-            url: '/admin-artists/delete/' + artistId,
-            type: 'POST',
-            success: function(response) {
-              if (response === 'success') {
-                $('.artist-name[data-id="' + artistId + '"]').closest('.artist-row').remove();
-              } else {
-                alert('A apărut o eroare la ștergerea artistului.');
-              }
-            },
-            error: function() {
-              alert('A apărut o eroare la ștergerea artistului.');
-            }
-          });
-        }
-      });
-
       $(document).click(function(event) {
         var target = $(event.target);
         if (!target.hasClass('artist-name') && !target.closest('.action-buttons').length) {
@@ -159,7 +138,10 @@
               <a class="artist-name" data-id="${artist.id}" th:text="${artist.nume}"></a>
               <div class="action-buttons">
                 <a href="#" class="btn btn-primary edit-artist" data-id="${artist.id}">Modificare Artist</a>
-                <a href="#" class="btn btn-danger delete-button" data-id="${artist.id}">Ștergere Artist</a>
+                <form th:action="@{/admin-artists/delete}" method="post" class="delete-form">
+                  <input type="hidden" th:name="id" th:value="${artist.id}">
+                  <button type="submit" class="btn btn-danger">Ștergere Artist</button>
+                </form>
               </div>
             </td>
           </tr>
