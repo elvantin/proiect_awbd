@@ -7,6 +7,7 @@ import lombok.*;
 import org.antlr.v4.runtime.misc.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonBackReference; // Importăm adnotarea
+import org.springframework.validation.annotation.Validated;
 
 @Entity
 @Table(name = "audioalbum")
@@ -14,12 +15,13 @@ import com.fasterxml.jackson.annotation.JsonBackReference; // Importăm adnotare
 @AllArgsConstructor
 @Setter
 @Getter
-@ToString
+@Validated
+@ToString(exclude = "artist")
 public class AudioAlbum {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NotNull
+    @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
     @Column(name = "titlu_album")
@@ -34,11 +36,13 @@ public class AudioAlbum {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_artist", referencedColumnName = "id", insertable = false, updatable = false)
     @JsonIgnore
-    @JsonBackReference // Adăugăm această adnotare pentru a gestiona relația bidirecțională
+    @JsonBackReference // adnotare pt bidirectionalitate
     private Artist artist;
 
-    public AudioAlbum(String titlu_album, Artist artist) {
+    public AudioAlbum(String titlu_album, Long id_artist, int an) {
         this.titlu_album = titlu_album;
-        this.artist = artist;
+        this.id_artist = id_artist;
+        this.an = an;
     }
 }
+

@@ -5,6 +5,8 @@ import com.example.awbd.repo.AudioAlbumRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -12,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/audioAlbums")
+@RequestMapping("/audioalbums")
 public class AudioAlbumController {
 
     @Autowired
@@ -37,12 +39,17 @@ public class AudioAlbumController {
     public ResponseEntity<AudioAlbum> getAudioAlbumById(@PathVariable Long id) {
         Optional<AudioAlbum> audioAlbumData = audioAlbumRepo.findById(id);
 
-        return audioAlbumData.map(audioAlbum -> new ResponseEntity<>(audioAlbum, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return audioAlbumData.map(audioAlbum -> new ResponseEntity<>(audioAlbum, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping
-    public ResponseEntity<AudioAlbum> addAudioAlbum(@RequestBody AudioAlbum audioAlbum) {
+    public ResponseEntity<AudioAlbum> addAudioAlbum(@Validated @RequestBody AudioAlbum audioAlbum, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         try {
+            audioAlbum.setArtist(null);
             AudioAlbum audioAlbumObject = audioAlbumRepo.save(audioAlbum);
             return new ResponseEntity<>(audioAlbumObject, HttpStatus.CREATED);
         } catch (Exception ex) {

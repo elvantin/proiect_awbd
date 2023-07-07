@@ -7,7 +7,6 @@
   <script src="/webjars/jquery/3.5.1/jquery.min.js"></script>
   <script src="/webjars/bootstrap/4.5.0/js/bootstrap.min.js"></script>
   <link rel="stylesheet" href="/webjars/font-awesome/6.4.0/css/all.min.css"/>
-  <link rel="stylesheet" href="/resources/static/css/custom.css"/>
   <style>
     .teal-bar {
       display: flex;
@@ -31,49 +30,52 @@
       color: purple;
       text-align: center;
     }
-    .description {
-      text-align: center;
-    }
     .subtitle {
       color: red;
       text-align: center;
     }
     .card-table {
-      width: 300px;
+      width: max-content;
       margin: 0 auto;
-      perspective: 800px;
-    }
-    .card-table .card {
-      position: relative;
-      transform-style: preserve-3d;
-      transform: rotateX(0deg);
-      transition: transform 0.5s;
-      border: 2px solid #ccc;
-      border-radius: 10px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
-    }
-    .card-table .card:hover {
-      transform: rotateX(10deg);
-    }
-    .card-table .card .card-body {
-      padding: 10px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
     }
     th, td {
       padding: 8px;
       border: 1px solid #ccc;
     }
+    .artist-name {
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .action-buttons {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      padding: 10px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+    }
+    .artist-row.expanded .action-buttons {
+      display: block;
+    }
   </style>
 
   <script>
     $(document).ready(function() {
+      $('.artist-name').click(function() {
+        var row = $(this).closest('.artist-row');
+        var actionButtons = row.find('.action-buttons');
+        row.toggleClass('expanded');
+        $('.action-buttons').not(actionButtons).slideUp();
+        actionButtons.slideToggle();
+      });
 
-      $('.edit-artist').click(function() {
+      $('.edit-artist').click(function(event) {
+        event.stopPropagation();
         var artistId = $(this).attr('data-id');
-        var artistName = $(this).text();
+        var artistName = $(this).closest('.artist-row').find('.artist-name').text();
         var newName = prompt('Introduceți noul nume pentru artist:', artistName);
         if (newName !== null && newName !== '') {
           var formData = new FormData();
@@ -81,7 +83,7 @@
 
           $.ajax({
             url: '/admin-artists/update/' + artistId,
-            type: 'PUT', // Modifică tipul de cerere în PUT
+            type: 'PUT',
             data: formData,
             processData: false,
             contentType: false,
@@ -99,7 +101,8 @@
         }
       });
 
-      $('.delete-button').click(function() {
+      $('.delete-button').click(function(event) {
+        event.stopPropagation();
         var artistId = $(this).attr('data-id');
         if (confirm('Sigur doriți să ștergeți acest artist?')) {
           $.ajax({
@@ -107,7 +110,7 @@
             type: 'POST',
             success: function(response) {
               if (response === 'success') {
-                $('.artist-name[data-id="' + artistId + '"]').closest('tr').remove();
+                $('.artist-name[data-id="' + artistId + '"]').closest('.artist-row').remove();
               } else {
                 alert('A apărut o eroare la ștergerea artistului.');
               }
@@ -116,6 +119,14 @@
               alert('A apărut o eroare la ștergerea artistului.');
             }
           });
+        }
+      });
+
+      $(document).click(function(event) {
+        var target = $(event.target);
+        if (!target.hasClass('artist-name') && !target.closest('.action-buttons').length) {
+          $('.artist-row').removeClass('expanded');
+          $('.action-buttons').slideUp();
         }
       });
     });
@@ -139,16 +150,17 @@
           <tr>
             <th>ID</th>
             <th>Nume</th>
-            <th>Acțiuni</th>
           </tr>
           </thead>
           <tbody>
-          <tr th:each="artist : ${artists}">
-            <td th:text="${artist.id}"></td>
-            <td class="artist-name" data-id="${artist.id}" th:text="${artist.nume}"></td>
+          <tr th:each="artist, row : ${artists}" class="artist-row">
+            <td class="artist-id" th:text="${artist.id}"></td>
             <td>
-              <button class="btn btn-primary edit-artist" data-id="${artist.id}">Modificare</button>
-              <button class="btn btn-danger delete-button" data-id="${artist.id}">Ștergere</button>
+              <a class="artist-name" data-id="${artist.id}" th:text="${artist.nume}"></a>
+              <div class="action-buttons">
+                <a href="#" class="btn btn-primary edit-artist" data-id="${artist.id}">Modificare Artist</a>
+                <a href="#" class="btn btn-danger delete-button" data-id="${artist.id}">Ștergere Artist</a>
+              </div>
             </td>
           </tr>
           </tbody>
@@ -163,7 +175,3 @@
 </div>
 </body>
 </html>
-
-
-
-

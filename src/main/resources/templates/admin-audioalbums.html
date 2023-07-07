@@ -15,13 +15,13 @@
   </tr>
   </thead>
   <tbody>
-  <tr th:each="audioAlbum : ${audioAlbums}">
-    <td th:text="${audioAlbum.id}"></td>
-    <td th:text="${audioAlbum.titlu_album}"></td>
-    <td th:text="${audioAlbum.id_artist}"></td>
+  <tr th:each="audioalbum : ${audioalbums}">
+    <td th:text="${audioalbum.id}"></td>
+    <td th:text="${audioalbum.titlu_album}"></td>
+    <td th:text="${audioalbum.id_artist}"></td>
     <td>
-      <form th:action="@{/admin/audioAlbums/delete}" th:object="${audioAlbum}" method="post">
-        <input th:value="${audioAlbum.id}" th:name="id" type="hidden">
+      <form th:action="@{/admin-audioalbums/delete}" th:object="${audioalbum}" method="post">
+        <input th:value="${audioalbum.id}" th:name="id" type="hidden">
         <button type="submit">Delete</button>
       </form>
     </td>
@@ -30,10 +30,12 @@
 </table>
 
 <h2>Add new Audio Album</h2>
-<form th:action="@{/admin/audioAlbums}" th:object="${newAudioAlbum}" method="post">
-  <input th:field="*{titlu_album}" placeholder="Title" required>
-  <input th:field="*{id_artist}" placeholder="Artist Id" required>
-  <button type="submit">Add</button>
+<form method="post" action="/admin-audioalbums/add">
+  <input type="text" name="Titlu" placeholder="Titlu album" required/>
+  <input type="text" name="id_artist" placeholder="ID Artist" required/>
+  <input type="text" name="An" placeholder="An album" required/>
+  <button type="submit">Adaugă Artist</button>
+</form>
 </form>
 </body>
 </html>

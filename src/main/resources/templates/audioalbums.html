@@ -64,7 +64,7 @@
   <h1 class="title">Rock JukeBox</h1>
   <h2 class="subtitle">Albume</h2>
   <div class="row">
-    <div th:each="i : ${#numbers.sequence(0, #lists.size(audioAlbums) / 10)}" class="col-md-4 my-3">
+    <div class="col-md-12 my-3">
       <div class="card">
         <div class="card-body">
           <table class="table">
@@ -72,14 +72,18 @@
             <tr>
               <th>ID</th>
               <th>Titlu Album</th>
+              <th>Artist</th>
+              <th>An</th>
               <th>ID Artist</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="audioAlbum : ${audioAlbums.subList(i * 10, ((i + 1) * 10) > audioAlbums.size() ? audioAlbums.size() : (i + 1) * 10)}">
-              <td th:text="${audioAlbum.id}"></td>
-              <td th:text="${audioAlbum.titlu_album}"></td>
-              <td th:text="${audioAlbum.id_artist}"></td>
+            <tr th:each="audioalbum : ${audioalbums}">
+              <td th:text="${audioalbum.id}"></td>
+              <td th:text="${audioalbum.titlu_album}"></td>
+              <td th:text="${audioalbum.artist.nume}"></td>
+              <td th:text="${audioalbum.an}"></td>
+              <td th:text="${audioalbum.id_artist}"></td>
             </tr>
             </tbody>
           </table>

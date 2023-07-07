@@ -1,40 +1,52 @@
 package com.example.awbd.controller;
 
+import com.example.awbd.model.Artist;
 import com.example.awbd.model.AudioAlbum;
+import com.example.awbd.model.forms.AddAudioAlbum;
+import com.example.awbd.repo.ArtistRepo;
 import com.example.awbd.repo.AudioAlbumRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
+@RequestMapping("/admin-audioalbums")
 public class AdminAlbumPageController {
 
     @Autowired
     private AudioAlbumRepo audioAlbumRepo;
 
-    @GetMapping("/admin/audioAlbums")
-    public String getAllAudioAlbums(Model model) {
-        List<AudioAlbum> audioAlbumList = audioAlbumRepo.findAll();
-        model.addAttribute("audioAlbums", audioAlbumList);
-        model.addAttribute("newAudioAlbum", new AudioAlbum());
-        return "admin-audioalbums";
+    @Autowired
+    private ArtistRepo artistRepo;
+
+    @RequestMapping({"", "/"})
+    public ModelAndView getHome() {
+        ModelAndView modelAndView = new ModelAndView("admin-audioalbums");
+        List<AudioAlbum> audioAlbumList = new ArrayList<>(audioAlbumRepo.findAll());
+        modelAndView.addObject("audioalbums", audioAlbumList);
+        return modelAndView;
     }
 
-    @PostMapping("/admin/audioAlbums")
-    public String addAudioAlbum(@ModelAttribute AudioAlbum newAudioAlbum) {
-        audioAlbumRepo.save(newAudioAlbum);
-        return "redirect:/admin/audioAlbums";
+    @PostMapping("/add")
+    public ModelAndView addAudioAlbumAndSubmit(@ModelAttribute AddAudioAlbum addAudioAlbum) {
+        audioAlbumRepo.save(new AudioAlbum(addAudioAlbum.getTitlu_album(), addAudioAlbum.getId_artist(), addAudioAlbum.getAn()));
+
+        ModelAndView modelAndView = new ModelAndView("admin-audioalbums"); //html page
+        List<AudioAlbum> audioAlbumList = new ArrayList<>(audioAlbumRepo.findAll());
+        modelAndView.addObject("audioalbums", audioAlbumList);
+        return modelAndView;
     }
 
-    @PostMapping("/admin/audioAlbums/delete")
+      @PostMapping("/delete")
     public String deleteAudioAlbum(@RequestParam Long id) {
         audioAlbumRepo.deleteById(id);
-        return "redirect:/admin/audioAlbums";
+        return "redirect:/admin-audioalbums";
     }
 }

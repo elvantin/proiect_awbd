@@ -59,7 +59,7 @@ public class SecurityConfigH2 {
                 .authorizeRequests(auth -> auth
                                 .requestMatchers("/h2-console/**").hasRole("ADMIN")
                                 .requestMatchers("/artists").authenticated()
-                                .requestMatchers("/audioAlbums").authenticated()
+                                .requestMatchers("/audioalbums").authenticated()
                                 .requestMatchers("/audiotracks").authenticated()
                                 //.requestMatchers("/h2-console").hasRole("ADMIN")
                                 .requestMatchers("/lyrics").authenticated()
