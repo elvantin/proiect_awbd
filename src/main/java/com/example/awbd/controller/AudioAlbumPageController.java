@@ -26,12 +26,12 @@ public class AudioAlbumPageController {
         ModelAndView modelAndView = new ModelAndView("audioalbums");
         List<AudioAlbum> audioAlbumList = new ArrayList<>(audioAlbumRepo.findAll());
 
-        for (AudioAlbum audioAlbum : audioAlbumList) {
+        /*for (AudioAlbum audioAlbum : audioAlbumList) {
             Artist artist = artistRepo.findById(audioAlbum.getId_artist()).orElse(null);
             if (artist != null) {
                 audioAlbum.setArtist(artist);
             }
-        }
+        }*/
 
         modelAndView.addObject("audioalbums", audioAlbumList);
         return modelAndView;

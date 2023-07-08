@@ -162,31 +162,6 @@
           <button type="submit" id="update-album-button" class="btn btn-success">Actualizare</button>
         </form>
 
-      <!--  <script>
-          $(document).ready(function() {
-            $('.edit-album-button').click(function() {
-              var albumId = $(this).attr('data-id');
-              var albumRow = $(this).closest('tr');
-              var albumTitlu = albumRow.find('td:nth-child(2)').text();
-              var albumIdArtist = albumRow.find('td:nth-child(5)').text();
-              var albumAn = albumRow.find('td:nth-child(4)').text();
-
-              $('#edit-album-form').attr('action', '/admin-audioalbums/update/' + albumId);
-              $('#edit-album-id').val(albumId);
-              $('#edit-album-titlu').val(albumTitlu);
-              $('#edit-album-id-artist').val(albumIdArtist);
-              $('#edit-album-an').val(albumAn);
-
-              // Ascunde rândul și afișează formularul de editare
-              albumRow.hide();
-              $('#edit-album-form').show();
-            });
-            $('#cancel-edit-button').click(function() {
-              $('#edit-album-form').hide();
-              $('tr').show();
-            });
-          });
-        </script>-->
       </div>
     </div>
   </div>

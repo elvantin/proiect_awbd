@@ -57,12 +57,12 @@
 <div class="container">
   <div class="teal-bar">
     <a class="nav-link" th:href="@{'/main'}" title="Acasă"> <i class="fas fa-couch mx-1"></i> Acasă </a>
-    <a class="nav-link" th:href="@{'/show-audioalbums'}" title="Albume"><i class="fas fa-record-vinyl"></i> Albume</a>
+    <a class="nav-link" th:href="@{'/show-audiotracks'}" title="Melodii"><i class="fas fa-headphones"></i> Melodii</a>
   </div>
 </div>
 <div class="container">
   <h1 class="title">Rock JukeBox</h1>
-  <h2 class="subtitle">Albume</h2>
+  <h2 class="subtitle">Melodii</h2>
   <div class="row">
     <div class="col-md-12 my-3">
       <div class="card">
@@ -70,20 +70,24 @@
           <table class="table">
             <thead>
             <tr>
-              <th>ID</th>
-              <th>Titlu Album</th>
               <th>Artist</th>
-              <th>An</th>
+              <th>Titlu Album</th>
+              <th>Titlu Piesa</th>
+              <th>Durata</th>
               <th>ID Artist</th>
+              <th>ID Album</th>
+              <th>&nbsp;</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="audioalbum : ${audioalbums}">
-              <td th:text="${audioalbum.id}"></td>
-              <td th:text="${audioalbum.titlu_album}"></td>
-              <td th:text="${audioalbum.getArtist().nume}"></td>
-              <td th:text="${audioalbum.an}"></td>
-              <td th:text="${audioalbum.id_artist}"></td>
+            <tr th:each="audiotrack : ${audiotracks}">
+              <td th:text="${audiotrack.getArtist().nume}"></td>
+              <td th:text="${audiotrack.getAlbum().titlu_album}"></td>
+              <td th:text="${audiotrack.titlu_piesa}"></td>
+              <td th:text="${audiotrack.durata}"></td>
+              <td th:text="${audiotrack.id_artist}"></td>
+              <td th:text="${audiotrack.id_album}"></td>
+              <td><a class="versuri" data-id="${audiotrack.id}" th:href="@{/show-lyrics/{id}(id=${audiotrack.id})}">Versuri</a></td>
             </tr>
             </tbody>
           </table>

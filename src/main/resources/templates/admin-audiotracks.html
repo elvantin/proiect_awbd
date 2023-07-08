@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ro" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Rock JukeBox</title>
+  <link rel="stylesheet" href="/webjars/bootstrap/4.5.0/css/bootstrap.min.css"/>
+  <script src="/webjars/jquery/3.5.1/jquery.min.js"></script>
+  <script src="/webjars/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="/webjars/font-awesome/6.4.0/css/all.min.css"/>
+  <link rel="stylesheet" href="/resources/static/css/custom.css"/>
+  <style>
+    .teal-bar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #dafda6;
+      margin-bottom: 10px;
+    }
+    .teal-bar a {
+      display: inline-block;
+      color: #131e75;
+      padding: 10px;
+    }
+    .teal-bar a:hover {
+      background-color: #ff8c00;
+    }
+    .teal-bar i {
+      margin-right: 5px;
+    }
+    .title {
+      color: purple;
+      text-align: center;
+    }
+    .subtitle {
+      color: #00ff3c;
+      text-align: center;
+    }
+    .card {
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
+    }
+    .card-body {
+      padding: 10px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 8px;
+      border: 1px solid #ccc;
+    }
+
+    .action-buttons {
+      display: none;
+      /*position: absolute;*/
+      top: 100%;
+      left: 0;
+      padding: 10px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+    }
+    .audiotrack-row.expanded .action-buttons {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+<script>
+  $(document).ready(function() {
+    $('.edit-audiotrack-button').click(function() {
+      var row = $(this).closest('.audiotrack-row');
+      var actionButtons = row.find('.action-buttons');
+      row.toggleClass('expanded');
+      $('.action-buttons').not(actionButtons).slideUp();
+      actionButtons.slideToggle();
+
+
+    });
+
+    $(document).click(function(event) {
+      var target = $(event.target);
+      if (!target.hasClass('edit-audiotrack-button') && !target.closest('.action-buttons').length) {
+        $('.audiotrack-row').removeClass('expanded');
+        $('.action-buttons').slideUp();
+
+      }
+    });
+  });
+</script>
+
+<div class="container">
+  <div class="teal-bar">
+    <a class="nav-link" th:href="@{'/main'}" title="Acasă"> <i class="fas fa-couch mx-1"></i> Acasă </a>
+    <a class="nav-link" th:href="@{'/show-audiotracks'}" title="Melodii"><i class="fas fa-headphones"></i> Melodii</a>
+  </div>
+</div>
+<div class="container">
+  <h1 class="title">Rock JukeBox (zona admin)</h1>
+  <h2 class="subtitle">Administrare Melodii</h2>
+
+  <div class="card-table">
+    <div class="card">
+      <div class="card-body">
+        <table>
+          <thead>
+          <tr>
+            <th>Artist</th>
+            <th>Titlu Album</th>
+            <th>Titlu Piesa</th>
+            <th>Durata</th>
+            <th>ID Artist</th>
+            <th>ID Album</th>
+            <th>Acțiuni</th>
+            <th>&nbsp;</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="audiotrack, status : ${audiotracks}"  class="audiotrack-row">
+            <td th:text="${audiotrack.getArtist().nume}"></td>
+            <td th:text="${audiotrack.getAlbum().titlu_album}"></td>
+            <td th:text="${audiotrack.titlu_piesa}"></td>
+            <td th:text="${audiotrack.durata}"></td>
+            <td th:text="${audiotrack.id_artist}"></td>
+            <td th:text="${audiotrack.id_album}"></td>
+            <td><a class="versuri" data-id="${audiotrack.id}" th:href="@{/admin-lyrics/{id}(id=${audiotrack.id})}">Versuri</a></td>
+            <td>
+              <button type="button" class="btn btn-primary edit-audiotrack-button" data-id="${audiotrack.id}">Editare</button>
+              <div class="action-buttons">
+                <form th:action="@{/admin-audiotracks/update}" method="post" class="update-form">
+                  <input type="hidden" name="_method" value="put">
+                  <input type="hidden" name="id" th:value="${audiotrack.id}">
+                  <label th:for="titlu_piesa">Titlu piesa</label>&nbsp;<input type="text" th:name="titlu_piesa" th:value="${audiotrack.titlu_piesa}" requireq><br/>
+                  <label th:for="durata">Durata</label>&nbsp;<input type="text" th:name="durata" th:value="${audiotrack.durata}" requireq><br/>
+                  <label th:for="id_artist">Artist</label>&nbsp;<input type="text" th:name="id_artist" th:value="${audiotrack.id_artist}" requireq><br/>
+                  <label th:for="id_album">ID Album</label>&nbsp;<input type="text" th:name="id_album" th:value="${audiotrack.id_album}" requireq><br/>
+                  <button type="submit" class="btn btn-success update-audiotrack-button">Actualizare</button>
+                </form>
+              </div>
+              <form th:action="@{/admin-audiotracks/delete}" th:object="${audiotrack}" method="post" style="display: inline-block;">
+                <input type="hidden" name="id" th:value="${audiotrack?.id}" />
+                <button type="submit" class="btn btn-danger">Ștergere</button>
+              </form>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+
+        <form id="add-audiotrack-form" method="post" action="/admin-audiotracks/add" style="margin-top: 20px;">
+          <input id="add-titlu-piesa" type="text" name="titlu_piesa" placeholder="Titlu piesa" required/>
+          <input id="add-id-artist" type="text" name="id_artist" placeholder="ID Artist" required/>
+          <input id="add-id-album" type="text" name="id_album" placeholder="ID Album" required/>
+          <input id="add-durata" type="text" name="durata" placeholder="Durata mm:ss" required/>
+          <button type="submit" class="btn btn-success">Adaugă Piesa</button>
+        </form>
+
+        <form id="edit-album-form" th:action="@{/admin-audiotracks/update}" method="post" style="display: none;">
+          <input type="hidden" name="_method" value="put" />
+          <input type="hidden" name="id" th:value="${audiotrack?.id}" />
+          <input type="text" name="titlu_piesa" placeholder="Titlu piesa" required/>
+          <input type="text" name="durata" placeholder="Durata" required/>
+          <input type="text" name="id_artist" placeholder="ID Artist" required/>
+          <input type="text" name="id_album" placeholder="ID Album" required/>
+          <button type="button" id="cancel-edit-button" class="btn btn-danger">Anulare</button>
+          <button type="submit" id="update-audiotrack-button" class="btn btn-success">Actualizare</button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

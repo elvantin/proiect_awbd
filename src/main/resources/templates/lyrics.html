@@ -31,16 +31,31 @@
       color: purple;
       text-align: center;
     }
+    .description {
+      text-align: center;
+    }
     .subtitle {
       color: red;
       text-align: center;
     }
-    .card {
+    .card-table {
+      width: 300px;
+      margin: 0 auto;
+      perspective: 800px;
+    }
+    .card-table .card {
+      position: relative;
+      transform-style: preserve-3d;
+      transform: rotateX(0deg);
+      transition: transform 0.5s;
       border: 2px solid #ccc;
       border-radius: 10px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
     }
-    .card-body {
+    .card-table .card:hover {
+      transform: rotateX(10deg);
+    }
+    .card-table .card .card-body {
       padding: 10px;
     }
     table {
@@ -57,37 +72,15 @@
 <div class="container">
   <div class="teal-bar">
     <a class="nav-link" th:href="@{'/main'}" title="Acasă"> <i class="fas fa-couch mx-1"></i> Acasă </a>
-    <a class="nav-link" th:href="@{'/show-audioalbums'}" title="Albume"><i class="fas fa-record-vinyl"></i> Albume</a>
+    <a class="nav-link" th:href="@{'/show-audiotracks'}" title="Versuri"> <i class="fas fa-microphone"></i> Versuri </a>
   </div>
 </div>
 <div class="container">
   <h1 class="title">Rock JukeBox</h1>
-  <h2 class="subtitle">Albume</h2>
-  <div class="row">
-    <div class="col-md-12 my-3">
-      <div class="card">
-        <div class="card-body">
-          <table class="table">
-            <thead>
-            <tr>
-              <th>ID</th>
-              <th>Titlu Album</th>
-              <th>Artist</th>
-              <th>An</th>
-              <th>ID Artist</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="audioalbum : ${audioalbums}">
-              <td th:text="${audioalbum.id}"></td>
-              <td th:text="${audioalbum.titlu_album}"></td>
-              <td th:text="${audioalbum.getArtist().nume}"></td>
-              <td th:text="${audioalbum.an}"></td>
-              <td th:text="${audioalbum.id_artist}"></td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
+  <h2 class="subtitle">Versuri</h2>
+  <div class="card-table">
+    <div class="card">
+      <p th:text="${lyrics?.lyricsText}"></p>
       </div>
     </div>
   </div>

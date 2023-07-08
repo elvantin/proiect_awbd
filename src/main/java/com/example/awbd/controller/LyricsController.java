@@ -58,7 +58,7 @@ public class LyricsController {
 
         if (oldLyricsData.isPresent()) {
             Lyrics updatedLyricsData = oldLyricsData.get();
-            updatedLyricsData.setLyrics(newLyricsData.getLyrics());
+            updatedLyricsData.setLyricsText(newLyricsData.getLyricsText());
             updatedLyricsData.setAudiotrack(newLyricsData.getAudiotrack());
 
             Lyrics lyricsObject = lyricsRepo.save(updatedLyricsData);

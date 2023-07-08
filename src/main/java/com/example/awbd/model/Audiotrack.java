@@ -1,5 +1,6 @@
 package com.example.awbd.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
@@ -21,16 +22,23 @@ public class Audiotrack {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "id_artist")
+    @Column(name = "id_artist")
+    private Long id_artist;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_artist", referencedColumnName = "id", insertable = false, updatable = false)
     @JsonIgnore
+    @JsonBackReference // adnotare pt bidirectionalitate
     private Artist artist;
 
     @Column(name = "titlu_piesa")
     private String titlu_piesa;
 
-    @ManyToOne
-    @JoinColumn(name = "id_album")
+    @Column(name = "id_album")
+    private Long id_album;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_album", referencedColumnName = "id", insertable = false, updatable = false)
     @JsonIgnore
     private AudioAlbum album;
 
@@ -40,4 +48,11 @@ public class Audiotrack {
     @OneToOne(mappedBy = "audiotrack", cascade = CascadeType.ALL)
     @JsonIgnore
     private Lyrics lyrics;
+
+    public Audiotrack(Long id_artist, String titlu_piesa, Long id_album, String durata) {
+        this.id_artist = id_artist;
+        this.titlu_piesa = titlu_piesa;
+        this.id_album = id_album;
+        this.durata = durata;
+            }
 }
