@@ -5,8 +5,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AddUtilizator {
-    private String utilizator;
+public class AddPersoane {
+    private String uzr;
     private String nume;
 
     private String prenume;

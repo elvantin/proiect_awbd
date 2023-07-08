@@ -15,8 +15,8 @@ public class Rating {
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "id_utilizator")
-    private Utilizator utilizator;
+    @JoinColumn(name = "id_persoane")
+    private Persoane persoane;
 
     @Id
     @ManyToOne

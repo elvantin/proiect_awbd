@@ -11,6 +11,6 @@ import java.io.Serializable;
 @EqualsAndHashCode
 public class RatingId implements Serializable {
 
-    private Utilizator utilizator;
+    private Persoane persoane;
     private Audiotrack audiotrack;
 }

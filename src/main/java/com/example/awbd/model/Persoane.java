@@ -2,23 +2,26 @@ package com.example.awbd.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 
 @Entity
-@Table(name = "utilizator")
-@NoArgsConstructor(force = true)
+@Table(name = "persoane")
+@NoArgsConstructor
 @Setter
 @Getter
 @ToString
-public class Utilizator {
+@Validated
+public class Persoane {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
-    @Column(name = "utilizator")
-    private String utilizator;
+    @Column(name = "uzr")
+    private String uzr;
 
     @Column(name = "nume")
     private String nume;
@@ -32,11 +35,15 @@ public class Utilizator {
     @Column(name = "parola")
     private String parola;
 
-    @OneToMany(mappedBy = "utilizator", cascade = CascadeType.ALL)
+    @Column(name = "rol")
+    private String rol;
+
+
+    @OneToMany(mappedBy = "persoane", cascade = CascadeType.ALL)
     private List<Rating> ratings;
-    public Utilizator(Long id, String utilizator, String nume, String prenume, String email, String parola) {
+    public Persoane(Long id, String uzr, String nume, String prenume, String email, String parola) {
         this.id = id;
-        this.utilizator = utilizator;
+        this.uzr = uzr;
         this.nume = nume;
         this.prenume = prenume;
         this.email = email;

@@ -42,7 +42,7 @@
       padding: 8px;
       border: 1px solid #ccc;
     }
-    .utilizator-nume {
+    .persoane-nume {
       cursor: pointer;
       text-decoration: none;
     }
@@ -57,15 +57,15 @@
       border-top: none;
       border-radius: 0 0 8px 8px;
     }
-    .utilizator-row.expanded .action-buttons {
+    .persoane-row.expanded .action-buttons {
       display: block;
     }
   </style>
 
   <script>
     $(document).ready(function() {
-      $('.edit-utilizator-button').click(function() {
-        var row = $(this).closest('.utilizator-row');
+      $('.edit-persoane-button').click(function() {
+        var row = $(this).closest('.persoane-row');
         var actionButtons = row.find('.action-buttons');
         row.toggleClass('expanded');
         $('.action-buttons').not(actionButtons).slideUp();
@@ -76,8 +76,8 @@
 
       $(document).click(function(event) {
         var target = $(event.target);
-        if (!target.hasClass('edit-utilizator-button') && !target.closest('.action-buttons').length) {
-          $('.utilizator-row').removeClass('expanded');
+        if (!target.hasClass('edit-persoane-button') && !target.closest('.action-buttons').length) {
+          $('.persoane-row').removeClass('expanded');
           $('.action-buttons').slideUp();
 
         }
@@ -109,30 +109,29 @@
           </tr>
           </thead>
           <tbody>
-          <tr th:each="utilizator, row : ${utilizatorList}" class="utilizator-row">
-            <td th:text="${utilizator.utilizator}"></td>
-            <td th:text="${utilizator.nume}"></td>
-            <td th:text="${utilizator.prenume}"></td>
-            <td th:text="${utilizator.email}"></td>
-
+          <tr th:each="persoane, row : ${persoaneList}" class="persoane-row">
+            <td th:text="${persoane?.uzr}"></td>
+            <td th:text="${persoane?.nume}"></td>
+            <td th:text="${persoane?.prenume}"></td>
+            <td th:text="${persoane?.email}"></td>
             <td>
-              <button type="button" class="btn btn-primary edit-utilizator-button" data-id="${utilizator.id}">Editare</button>
+              <button type="button" class="btn btn-primary edit-persoane-button" data-id="${persoane.id}">Editare</button>
               <div class="action-buttons">
 
                 <form th:action="@{/admin-utilizatori/update}" method="post" class="update-form">
                   <input type="hidden" name="_method" value="put">
-                  <input type="hidden" name="id" th:value="${utilizator.id}">
-                  <label th:for="utilizator" th:text="Utilizator"/><input type="text" th:name="utilizator" th:value="${utilizator.utilizator}" requireq><br/>
-                  <label th:for="nume" th:text="Nume"/><input type="text" th:name="nume" th:value="${utilizator.nume}" requireq><br/>
-                  <label th:for="prenume" th:text="Prenume"/><input type="text" th:name="prenume" th:value="${utilizator.prenume}" requireq><br/>
-                  <label th:for="email" th:text="Email"/><input type="text" th:name="email" th:value="${utilizator.email}" requireq><br/>
-                  <label th:for="parola" th:text="Parola"/><input type="text" th:name="parola" th:value="${utilizator.parola}" requireq><br/>
-                  <button type="submit" class="btn btn-success update-utilizator-button">Actualizare</button>
+                  <input type="hidden" name="id" th:value="${persoane.id}">
+                  <label th:for="utilizator" th:text="Utilizator"/><input type="text" th:name="utilizator" th:value="${persoane.uzr}" requireq><br/>
+                  <label th:for="nume" th:text="Nume"/><input type="text" th:name="nume" th:value="${persoane.nume}" requireq><br/>
+                  <label th:for="prenume" th:text="Prenume"/><input type="text" th:name="prenume" th:value="${persoane.prenume}" requireq><br/>
+                  <label th:for="email" th:text="Email"/><input type="text" th:name="email" th:value="${persoane.email}" requireq><br/>
+                  <label th:for="parola" th:text="Parola"/><input type="text" th:name="parola" th:value="${persoane.parola}" requireq><br/>
+                  <button type="submit" class="btn btn-success update-persoane-button">Actualizare</button>
                 </form>
               </div>
 
-                <form th:action="@{/admin-utilizatori/delete}" th:object="${utilizator}" method="post" style="display: inline-block;">
-                  <input type="hidden" th:name="id" th:value="${utilizator?.id}">
+                <form th:action="@{/admin-utilizatori/delete}" th:object="${persoana}" method="post" style="display: inline-block;">
+                  <input type="hidden" th:name="id" th:value="${persoane?.id}">
                   <button type="submit" class="btn btn-danger">Ștergere Utilizator</button>
                 </form>
 
@@ -141,25 +140,26 @@
           </tbody>
         </table>
 
-        <form id="add-utilizator-form" method="post" action="/admin-utilizatori/add" style="margin-top: 20px;">
-          <input id="add-utilizator" type="text" name="utilizator" th:placeholder="${utilizator.utilizator}" required/>
-          <input id="add-nume" type="text" name="nume" th:placeholder="${utilizator.nume}" required/>
-          <input id="add-prenume" type="text" name="prenume" th:placeholder="${utilizator.prenume}" required/>
-          <input id="add-email" type="text" name="email" th:placeholder="${utilizator.email}" required/>
-          <input id="add-parola" type="text" name="parola" th:placeholder="${utilizator.parola}" required/>
+        <form id="add-persoane-form" method="post" action="/admin-utilizatori/add" style="margin-top: 20px;">
+          <input id="add-persoane" type="text" name="utilizator" th:placeholder="${persoane.uzr}" required/>
+          <input id="add-nume" type="text" name="nume" th:placeholder="${persoane.nume}" required/>
+          <input id="add-prenume" type="text" name="prenume" th:placeholder="${persoane.prenume}" required/>
+          <input id="add-email" type="text" name="email" th:placeholder="${persoane.email}" required/>
+          <input id="add-parola" type="text" name="parola" th:placeholder="${persoane.parola}" required/>
+
           <button type="submit" class="btn btn-success">Adaugă Utilizator</button>
         </form>
 
-        <form id="edit-utilizator-form" th:action="@{/admin-utilizatori/update}" method="post" style="display: none;">
+        <form id="edit-persoane-form" th:action="@{/admin-utilizatori/update}" method="post" style="display: none;">
           <input type="hidden" name="_method" value="put" />
-          <input type="hidden" name="id" th:value="${utilizator?.id}" />
+          <input type="hidden" name="id" th:value="${persoane?.id}" />
           <input type="text" name="utilizator" placeholder="Utilizator" required/>
           <input type="text" name="nume" placeholder="Nume" required/>
           <input type="text" name="prenume" placeholder="Prenume" required/>
           <input type="text" name="email" placeholder="Email" required/>
           <input type="text" name="parola" placeholder="Parola" required/>
           <button type="button" id="cancel-edit-button" class="btn btn-danger">Anulare</button>
-          <button type="submit" id="update-utilizator-button" class="btn btn-success">Actualizare</button>
+          <button type="submit" id="update-persoane-button" class="btn btn-success">Actualizare</button>
         </form>
 
       </div>

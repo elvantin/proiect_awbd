@@ -39,10 +39,14 @@ public class JpaUserDetailsService implements UserDetailsService {
 
         log.info(user.toString());
 
+        Set<Authority> authorities = new HashSet<>();
+        authorities.add(user.getAuthority()); // Assuming your User only has one Authority
+
         return new org.springframework.security.core.userdetails.User(user.getUsername(),
                 user.getPassword(), user.getEnabled(), user.getAccountNotExpired(),
-                user.getCredentialsNotExpired(), user.getAccountNotLocked(), getAuthorities(user.getAuthorities()));
+                user.getCredentialsNotExpired(), user.getAccountNotLocked(), getAuthorities(authorities));
     }
+
 
     private Collection<? extends GrantedAuthority> getAuthorities(Set<Authority> authorities) {
         if (authorities == null) {

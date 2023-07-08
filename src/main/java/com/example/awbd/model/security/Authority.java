@@ -3,9 +3,12 @@ package com.example.awbd.model.security;
 import lombok.*;
 
 import jakarta.persistence.*;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.Set;
 
 @Entity
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
@@ -15,11 +18,13 @@ import java.util.Set;
 public class Authority {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String role;
 
-    @ManyToMany(mappedBy = "authorities")
-    private Set<User> users;
+    @OneToOne(mappedBy = "authority")
+    private User user;
+
+
 }

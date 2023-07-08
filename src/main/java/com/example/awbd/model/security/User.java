@@ -1,28 +1,29 @@
 package com.example.awbd.model.security;
 
-import lombok.*;
-
 import jakarta.persistence.*;
-import java.util.Set;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Entity
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
-@Getter
 @Builder
+@Entity
 @Table(name = "app_user")
 public class User {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
     private String username;
     private String password;
 
-    @Singular
-    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
-    @JoinTable(name = "user_authority", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "username"),
-            inverseJoinColumns = @JoinColumn(name="authority_id", referencedColumnName = "id"))
-    private Set<Authority> authorities;
+    @OneToOne
+    private Authority authority;
+
 
     @Builder.Default
     private Boolean enabled = true;

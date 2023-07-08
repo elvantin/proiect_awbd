@@ -1,9 +1,10 @@
 package com.example.awbd.repo;
 
-import com.example.awbd.model.Utilizator;
+import com.example.awbd.model.Persoane;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UtilizatorRepo extends JpaRepository<Utilizator, Long> {
+public interface PersoaneRepo extends JpaRepository<Persoane, Long> {
 }

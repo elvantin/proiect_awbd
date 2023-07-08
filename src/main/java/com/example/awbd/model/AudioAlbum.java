@@ -6,7 +6,7 @@ import lombok.*;
 
 import org.antlr.v4.runtime.misc.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonBackReference; // Importăm adnotarea
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.springframework.validation.annotation.Validated;
 
 @Entity
