@@ -68,44 +68,89 @@
   <div class="card-table">
     <div class="card">
       <div class="card-body">
-<table>
-  <thead>
-  <tr>
-    <th>Id</th>
-    <th>Titlu Album</th>
-    <th>Artist</th>
-    <th>An</th>
-    <th>ID Artist</th>
-    <th>Delete</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr th:each="audioalbum : ${audioalbums}">
-    <td th:text="${audioalbum.id}"></td>
-    <td th:text="${audioalbum.titlu_album}"></td>
-    <td th:text="${audioalbum.artist.nume}"></td>
-    <td th:text="${audioalbum.an}"></td>
-    <td th:text="${audioalbum.id_artist}"></td>
+        <table>
+          <thead>
+          <tr>
+            <th>Id</th>
+            <th>Titlu Album</th>
+            <th>Artist</th>
+            <th>An</th>
+            <th>ID Artist</th>
+            <th>Acțiuni</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="audioalbum, status : ${audioalbums}">
+            <td th:text="${audioalbum.id}"></td>
+            <td th:text="${audioalbum.titlu_album}"></td>
+            <td th:text="${audioalbum.artist.nume}"></td>
+            <td th:text="${audioalbum.an}"></td>
+            <td th:text="${audioalbum.id_artist}"></td>
+            <td>
+              <form th:action="@{/admin-audioalbums/update}" method="post" class="update-form">
+                <input type="hidden" name="_method" value="put">
+                <input type="hidden" name="id" th:value="${audioalbum.id}">
+                <input type="text" th:name="Titlu Album" th:placeholder="${audioalbum.titlu_album}" requireq>
+                <input type="text" th:name="ID Artist" th:placeholder="${audioalbum.id_artist}" requireq>
+                <input type="text" th:name="An" th:placeholder="${audioalbum.an}" requireq>
+                <button type="button" class="btn btn-primary edit-album-button" data-id="${audioalbum.id}">Editare</button>
+                <button type="submit" class="btn btn-success update-album-button" style="display: none;">Actualizare</button>
+              </form>
+              <form th:action="@{/admin-audioalbums/delete}" th:object="${audioalbum}" method="post" style="display: inline-block;">
+                <input type="hidden" name="id" th:value="${audioalbum?.id}" />
+                <button type="submit" class="btn btn-danger">Ștergere</button>
+              </form>
+            </td>
+          </tr>
+          </tbody>
+        </table>
 
-    <td>
-      <form th:action="@{/admin-audioalbums/delete}" th:object="${audioalbum}" method="post">
-        <input th:value="${audioalbum.id}" th:name="id" type="hidden">
-        <button type="submit">Delete</button>
-      </form>
-    </td>
-  </tr>
-  </tbody>
-</table>
+        <form id="add-album-form" method="post" action="/admin-audioalbums/add" style="margin-top: 20px;">
+          <input id="add-titlu-album" type="text" name="titlu_album" placeholder="Titlu album" required/>
+          <input id="add-id-artist" type="text" name="id_artist" placeholder="ID Artist" required/>
+          <input id="add-an" type="text" name="an" placeholder="An album" required/>
+          <button type="submit" class="btn btn-success">Adaugă Album</button>
+        </form>
 
-<form method="post" action="/admin-audioalbums/add">
-  <input type="text" name="Titlu" placeholder="Titlu album" required/>
-  <input type="text" name="id_artist" placeholder="ID Artist" required/>
-  <input type="text" name="An" placeholder="An album" required/>
-  <button type="submit">Adaugă Artist</button>
-</form>
+        <form id="edit-album-form" th:action="@{/admin-audioalbums/update}" method="post" style="display: none;">
+          <input type="hidden" name="_method" value="put" />
+          <input type="hidden" name="id" th:value="${audioalbum?.id}" />
+          <input type="text" name="titlu_album" placeholder="Titlu album" required/>
+          <input type="text" name="id_artist" placeholder="ID Artist" required/>
+          <input type="text" name="an" placeholder="An album" required/>
+          <button type="button" id="cancel-edit-button" class="btn btn-danger">Anulare</button>
+          <button type="submit" id="update-album-button" class="btn btn-success">Actualizare</button>
+        </form>
+
+        <script>
+          $(document).ready(function() {
+            $('.edit-album-button').click(function() {
+              var albumId = $(this).attr('data-id');
+              var albumRow = $(this).closest('tr');
+              var albumTitlu = albumRow.find('td:nth-child(2)').text();
+              var albumIdArtist = albumRow.find('td:nth-child(5)').text();
+              var albumAn = albumRow.find('td:nth-child(4)').text();
+
+              $('#edit-album-form').attr('action', '/admin-audioalbums/update/' + albumId);
+              $('#edit-album-id').val(albumId);
+              $('#edit-album-titlu').val(albumTitlu);
+              $('#edit-album-id-artist').val(albumIdArtist);
+              $('#edit-album-an').val(albumAn);
+
+              // Ascunde rândul și afișează formularul de editare
+              albumRow.hide();
+              $('#edit-album-form').show();
+            });
+            $('#cancel-edit-button').click(function() {
+              $('#edit-album-form').hide();
+              $('tr').show();
+            });
+          });
+        </script>
       </div>
     </div>
   </div>
 </div>
+
 </body>
 </html>

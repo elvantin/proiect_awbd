@@ -58,8 +58,8 @@ public class SecurityConfigH2 {
                 .exceptionHandling().and()
                 .authorizeRequests(auth -> auth
                                 .requestMatchers("/h2-console/**").hasRole("ADMIN")
-                                .requestMatchers("/artists").authenticated()
-                                .requestMatchers("/audioalbums").authenticated()
+                                .requestMatchers("/show-artists").authenticated()
+                                .requestMatchers("/show-audioalbums").authenticated()
                                 .requestMatchers("/audiotracks").authenticated()
                                 //.requestMatchers("/h2-console").hasRole("ADMIN")
                                 .requestMatchers("/lyrics").authenticated()
