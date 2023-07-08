@@ -76,18 +76,7 @@
         $('.update-form button[type="submit"]').hide();
       });
 
-      $('.edit-artist').click(function(event) {
-        event.stopPropagation();
-        var artistId = $(this).attr('data-id');
-        var artistName = $(this).closest('.artist-row').find('.artist-name').text();
-
-        // Set the form values when editing an artist
-        $('.update-form input[name="nume"]').val(artistName);
-        $('.update-form input[name="id"]').val(artistId);
-        $('.update-form button[type="submit"]').show();
-      });
-
-      $(document).click(function(event) {
+     $(document).click(function(event) {
         var target = $(event.target);
         if (!target.hasClass('artist-name') && !target.closest('.action-buttons').length) {
           $('.artist-row').removeClass('expanded');

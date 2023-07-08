@@ -51,9 +51,47 @@
       padding: 8px;
       border: 1px solid #ccc;
     }
+
+    .action-buttons {
+      display: none;
+      /*position: absolute;*/
+      top: 100%;
+      left: 0;
+      padding: 10px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+    }
+    .audioalbum-row.expanded .action-buttons {
+      display: block;
+    }
   </style>
 </head>
 <body>
+
+<script>
+  $(document).ready(function() {
+    $('.edit-album-button').click(function() {
+      var row = $(this).closest('.audioalbum-row');
+      var actionButtons = row.find('.action-buttons');
+      row.toggleClass('expanded');
+      $('.action-buttons').not(actionButtons).slideUp();
+      actionButtons.slideToggle();
+
+
+    });
+
+    $(document).click(function(event) {
+      var target = $(event.target);
+      if (!target.hasClass('edit-album-button') && !target.closest('.action-buttons').length) {
+        $('.audioalbum-row').removeClass('expanded');
+        $('.action-buttons').slideUp();
+
+        }
+    });
+  });
+</script>
 
 <div class="container">
   <div class="teal-bar">
@@ -80,22 +118,24 @@
           </tr>
           </thead>
           <tbody>
-          <tr th:each="audioalbum, status : ${audioalbums}">
+          <tr th:each="audioalbum, status : ${audioalbums}"  class="audioalbum-row">
             <td th:text="${audioalbum.id}"></td>
             <td th:text="${audioalbum.titlu_album}"></td>
-            <td th:text="${audioalbum.artist.nume}"></td>
-            <td th:text="${audioalbum.an}"></td>
             <td th:text="${audioalbum.id_artist}"></td>
+            <td th:text="${audioalbum.getArtist().nume}"></td>
+            <td th:text="${audioalbum.an}"></td>
             <td>
-              <form th:action="@{/admin-audioalbums/update}" method="post" class="update-form">
-                <input type="hidden" name="_method" value="put">
-                <input type="hidden" name="id" th:value="${audioalbum.id}">
-                <input type="text" th:name="Titlu Album" th:placeholder="${audioalbum.titlu_album}" requireq>
-                <input type="text" th:name="ID Artist" th:placeholder="${audioalbum.id_artist}" requireq>
-                <input type="text" th:name="An" th:placeholder="${audioalbum.an}" requireq>
-                <button type="button" class="btn btn-primary edit-album-button" data-id="${audioalbum.id}">Editare</button>
-                <button type="submit" class="btn btn-success update-album-button" style="display: none;">Actualizare</button>
-              </form>
+              <button type="button" class="btn btn-primary edit-album-button" data-id="${audioalbum.id}">Editare</button>
+              <div class="action-buttons">
+                <form th:action="@{/admin-audioalbums/update}" method="post" class="update-form">
+                  <input type="hidden" name="_method" value="put">
+                  <input type="hidden" name="id" th:value="${audioalbum.id}">
+                  <label th:for="titlu_album" th:text="Titlu"/>&nbsp;<input type="text" th:name="titlu_album" th:value="${audioalbum.titlu_album}" requireq><br/>
+                  <label th:for="id_artist" th:text="Artist"/>&nbsp;<input type="text" th:name="id_artist" th:value="${audioalbum.id_artist}" requireq><br/>
+                  <label th:for="an" th:text="An"/>&nbsp;<input type="text" th:name="an" th:value="${audioalbum.an}" requireq><br/>
+                  <button type="submit" class="btn btn-success update-album-button">Actualizare</button>
+                </form>
+              </div>
               <form th:action="@{/admin-audioalbums/delete}" th:object="${audioalbum}" method="post" style="display: inline-block;">
                 <input type="hidden" name="id" th:value="${audioalbum?.id}" />
                 <button type="submit" class="btn btn-danger">Ștergere</button>
@@ -122,7 +162,7 @@
           <button type="submit" id="update-album-button" class="btn btn-success">Actualizare</button>
         </form>
 
-        <script>
+      <!--  <script>
           $(document).ready(function() {
             $('.edit-album-button').click(function() {
               var albumId = $(this).attr('data-id');
@@ -146,7 +186,7 @@
               $('tr').show();
             });
           });
-        </script>
+        </script>-->
       </div>
     </div>
   </div>
