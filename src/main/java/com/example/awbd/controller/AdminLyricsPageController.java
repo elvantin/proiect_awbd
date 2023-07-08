@@ -2,7 +2,6 @@ package com.example.awbd.controller;
 
 
 import com.example.awbd.model.Lyrics;
-import com.example.awbd.model.forms.AddLyrics;
 import com.example.awbd.repo.LyricsRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
