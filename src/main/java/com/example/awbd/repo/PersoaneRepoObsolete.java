@@ -1,4 +1,4 @@
-package com.example.awbd.repo;
+/*package com.example.awbd.repo;
 
 import com.example.awbd.model.Persoane;
 
@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PersoaneRepo extends JpaRepository<Persoane, Long> {
-}
+}*/
+
+public interface PersoaneRepoObsolete{}

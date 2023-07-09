@@ -1,6 +1,5 @@
 package com.example.awbd.repo;
 
-import com.example.awbd.model.Persoane;
 import com.example.awbd.model.Rating;
 import com.example.awbd.model.RatingId;
 
@@ -12,5 +11,5 @@ import java.util.Optional;
 
 @Repository
 public interface RatingRepo extends JpaRepository<Rating, RatingId> {
-    Optional<Rating> findByPersoaneAndAudiotrack(Persoane persoane, Audiotrack audiotrack);
+    Optional<Rating> findByIdPersoanaAndIdAudiotrack(Integer idPersoana, Long idAudiotrack);
 }

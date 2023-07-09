@@ -1,14 +1,14 @@
 package com.example.awbd.controller;
 
-import com.example.awbd.model.Persoane;
 import com.example.awbd.model.Rating;
 import com.example.awbd.model.RatingId;
 
 import com.example.awbd.model.Audiotrack;
-import com.example.awbd.repo.PersoaneRepo;
+import com.example.awbd.model.security.User;
 import com.example.awbd.repo.RatingRepo;
 
 import com.example.awbd.repo.AudiotrackRepo;
+import com.example.awbd.repo.security.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +25,7 @@ public class RatingController {
     private RatingRepo ratingRepo;
 
     @Autowired
-    private PersoaneRepo persoaneRepo;
+    private UserRepository userRepository;
 
     @Autowired
     private AudiotrackRepo audiotrackRepo;
@@ -46,16 +46,19 @@ public class RatingController {
     }
 
     @GetMapping("/getRatingByUtilizatorAndAudiotrack/{utilizatorId}/{audiotrackId}")
-    public ResponseEntity<Rating> getRatingByPersoaneAndAudiotrack(@PathVariable Long utilizatorId, @PathVariable Long audiotrackId) {
-        Optional<Persoane> utilizatorData = persoaneRepo.findById(utilizatorId);
-        Optional<Audiotrack> audiotrackData = audiotrackRepo.findById(audiotrackId);
+    public ResponseEntity<Rating> getRatingByPersoaneAndAudiotrack(@PathVariable Integer utilizatorId, @PathVariable Long audiotrackId) {
+        /*Optional<User> utilizatorData = userRepository.findById(utilizatorId);
+        Optional<Audiotrack> audiotrackData = audiotrackRepo.findById(audiotrackId);*/
 
-        if (utilizatorData.isPresent() && audiotrackData.isPresent()) {
-            Optional<Rating> ratingData = ratingRepo.findByPersoaneAndAudiotrack(utilizatorData.get(), audiotrackData.get());
+       /* if (utilizatorData.isPresent() && audiotrackData.isPresent()) {
+            Optional<Rating> ratingData = ratingRepo.findByIdPersoanaAndIdAudiotrack(utilizatorId, audiotrackId);
             return ratingData.map(rating -> new ResponseEntity<>(rating, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-        }
+        }*/
 
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        Optional<Rating> ratingData = ratingRepo.findByIdPersoanaAndIdAudiotrack(utilizatorId, audiotrackId);
+        return ratingData.map(rating -> new ResponseEntity<>(rating, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+
+        //return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/addRating")
@@ -65,8 +68,8 @@ public class RatingController {
     }
 
     @PutMapping("/updateRatingByUtilizatorAndAudiotrack/{utilizatorId}/{audiotrackId}")
-    public ResponseEntity<Rating> updateRatingByPersoaneAndAudiotrack(@PathVariable Long utilizatorId, @PathVariable Long audiotrackId, @RequestBody Rating newRatingData) {
-        Optional<Persoane> utilizatorData = persoaneRepo.findById(utilizatorId);
+    public ResponseEntity<Rating> updateRatingByPersoaneAndAudiotrack(@PathVariable Integer utilizatorId, @PathVariable Long audiotrackId, @RequestBody Rating newRatingData) {
+       /* Optional<Persoane> utilizatorData = userRepository.findById(utilizatorId);
         Optional<Audiotrack> audiotrackData = audiotrackRepo.findById(audiotrackId);
 
         if (utilizatorData.isPresent() && audiotrackData.isPresent()) {
@@ -81,12 +84,23 @@ public class RatingController {
             }
         }
 
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);*/
+
+        Optional<Rating> ratingData = ratingRepo.findByIdPersoanaAndIdAudiotrack(utilizatorId, audiotrackId);
+        if (ratingData.isPresent()) {
+            Rating updatedRatingData = ratingData.get();
+            updatedRatingData.setRating(newRatingData.getRating());
+
+            Rating ratingObject = ratingRepo.save(updatedRatingData);
+            return new ResponseEntity<>(ratingObject, HttpStatus.OK);
+        }
+
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/deleteRatingByUtilizatorAndAudiotrack/{utilizatorId}/{audiotrackId}")
-    public ResponseEntity<HttpStatus> deleteRatingByPersoaneAndAudiotrack(@PathVariable Long utilizatorId, @PathVariable Long audiotrackId) {
-        Optional<Persoane> utilizatorData = persoaneRepo.findById(utilizatorId);
+    public ResponseEntity<HttpStatus> deleteRatingByPersoaneAndAudiotrack(@PathVariable Integer utilizatorId, @PathVariable Long audiotrackId) {
+        /*Optional<Persoane> utilizatorData = userRepository.findById(utilizatorId);
         Optional<Audiotrack> audiotrackData = audiotrackRepo.findById(audiotrackId);
 
         if (utilizatorData.isPresent() && audiotrackData.isPresent()) {
@@ -95,6 +109,10 @@ public class RatingController {
             return new ResponseEntity<>(HttpStatus.OK);
         }
 
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);*/
+
+        RatingId ratingId = new RatingId(utilizatorId, audiotrackId);
+        ratingRepo.deleteById(ratingId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

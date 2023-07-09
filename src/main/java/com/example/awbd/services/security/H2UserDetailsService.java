@@ -29,24 +29,30 @@ public class H2UserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user;
+        try {
+            User user;
 
-        Optional<User> userOpt = userRepository.findByUsername(username);
-        if (userOpt.isPresent())
-            user = userOpt.get();
-        else
-            throw new UsernameNotFoundException("Username: " + username);
+            Optional<User> userOpt = userRepository.findByUsername(username);
+            if (userOpt.isPresent())
+                user = userOpt.get();
+            else
+                throw new UsernameNotFoundException("Username: " + username);
 
-        log.info(user.toString());
+            log.info(user.toString());
 
-        Set<Authority> authorities = new HashSet<>();
-        authorities.add(user.getAuthority());
+            Set<Authority> authorities = new HashSet<>();
+            authorities.add(user.getAuthority());
 
-        return new org.springframework.security.core.userdetails.User(user.getUsername(),
-                user.getPassword(), user.getEnabled(), user.getAccountNotExpired(),
-                user.getCredentialsNotExpired(), user.getAccountNotLocked(), getAuthorities(authorities));
+            return new org.springframework.security.core.userdetails.User(user.getUsername(),
+                    user.getPassword(), user.getEnabled(), user.getAccountNotExpired(),
+                    user.getCredentialsNotExpired(), user.getAccountNotLocked(), getAuthorities(authorities));
+        }
+        catch (UsernameNotFoundException unf){throw unf;}
+        catch (Exception ex){
+            log.error(ex.toString());
+            throw ex;
+        }
     }
-
 
     private Collection<? extends GrantedAuthority> getAuthorities(Set<Authority> authorities) {
         if (authorities == null) {

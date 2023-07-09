@@ -1,3 +1,4 @@
+/*
 package com.example.awbd.controller;
 
 
@@ -70,3 +71,5 @@ public class AdminPersoanePageController {
         return new ModelAndView("redirect:/admin-utilizatori");
     }
 }
+*/
+public class AdminPersoanePageControllerObsolete{}

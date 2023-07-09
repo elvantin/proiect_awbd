@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
@@ -30,12 +31,17 @@ public class SecurityConfigH2 {
         this.userDetailsService = userDetailsService;
     }
 
-    @Bean
+    /*@Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
+    }*/
 
     @Bean
+    public PasswordEncoder passwordEncoder() {
+        return NoOpPasswordEncoder.getInstance();
+    }
+
+  /*  @Bean
     public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
         InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
         manager.createUser(User.withUsername("guest")
@@ -47,7 +53,7 @@ public class SecurityConfigH2 {
                 .roles("USER", "ADMIN")
                 .build());
         return manager;
-    }
+    }*/
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -57,23 +63,23 @@ public class SecurityConfigH2 {
                 .cors().disable()
                 .exceptionHandling().and()
                 .authorizeRequests(auth -> auth
-                                .requestMatchers("/h2-console/**").hasRole("ADMIN")
-                                .requestMatchers("/admin-utilizatori").authenticated()
-                                .requestMatchers("/show-audioalbums").authenticated()
-                                .requestMatchers("/show-audiotracks").authenticated()
-                                //.requestMatchers("/h2-console").hasRole("ADMIN")
-                                .requestMatchers("/show-lyrics").authenticated()
+                                .requestMatchers("/h2-console/**").hasAuthority("ADMIN")
                                 .requestMatchers("/login").permitAll()
-                                .requestMatchers("/main/**").authenticated()
+                                .requestMatchers("/admin-**").hasAuthority("ADMIN")
+                                .requestMatchers("/show-**").hasAnyAuthority("ADMIN", "USER")
                         //.anyRequest().authenticated()
                 )
-                .userDetailsService(userDetailsService)
+                .userDetailsService(this.userDetailsService)
                 //.authorizeRequests(auth -> auth
                 //        .requestMatchers("/h2-console/**").permitAll()
                 //        .requestMatchers("/main/**").permitAll()
                 //        .anyRequest().authenticated()
                 //)
                 .headers(headers -> headers.frameOptions().sameOrigin())
+                .formLogin().loginPage("/login").loginProcessingUrl("/perform_login").defaultSuccessUrl("/", true)
+                .and()
+                .exceptionHandling().accessDeniedPage("/access_denied")
+                .and()
                 .httpBasic(withDefaults())
                 .build();
     }

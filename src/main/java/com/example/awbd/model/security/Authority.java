@@ -1,11 +1,12 @@
 package com.example.awbd.model.security;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import jakarta.persistence.*;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Data
@@ -23,8 +24,14 @@ public class Authority {
 
     private String role;
 
-    @OneToOne(mappedBy = "authority")
-    private User user;
+    @OneToMany(mappedBy = "authority", fetch = FetchType.LAZY, orphanRemoval = true)
+    @JsonIgnore
+    @JsonBackReference // adnotare pt bidirectionalitate
+    private List<User> users;
 
-
+    // Overriding toString() method of String class
+    @Override
+    public String toString() {
+        return "[" + this.id + "] " + this.role;
+    }
 }

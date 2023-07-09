@@ -1,12 +1,9 @@
 package com.example.awbd.bootstrap;
 
-import com.example.awbd.model.Persoane;
 import com.example.awbd.model.security.Authority;
 import com.example.awbd.model.security.User;
-import com.example.awbd.repo.PersoaneRepo;
 import com.example.awbd.repo.security.AuthorityRepository;
 import com.example.awbd.repo.security.UserRepository;
-import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@AllArgsConstructor
 @Component
 @Profile("h2")
 public class DataLoader implements CommandLineRunner {
@@ -22,9 +18,12 @@ public class DataLoader implements CommandLineRunner {
     private final AuthorityRepository authorityRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final PersoaneRepo persoaneRepo;
-    private Authority adminRole;
-    private Authority guestRole;
+
+    public DataLoader(AuthorityRepository authorityRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.authorityRepository = authorityRepository;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     private void loadUserData() {
         if (userRepository.count() == 0) {
@@ -37,32 +36,30 @@ public class DataLoader implements CommandLineRunner {
             User admin = User.builder()
                     .username("admin")
                     .password(passwordEncoder.encode("Password1"))
-                    .authority(adminRole)
+                    .authority(null)
                     .build();
 
             User guest = User.builder()
                     .username("guest")
                     .password(passwordEncoder.encode("password"))
-                    .authority(guestRole)
+                    .authority(null)
                     .build();
 
-            userRepository.save(admin);
-            userRepository.save(guest);
+            admin = userRepository.save(admin);
+            admin.setAuthority(adminRole);
+            admin = userRepository.save(admin);
+
+            guest = userRepository.save(guest);
+            guest.setAuthority(guestRole);
+            guest = userRepository.save(guest);
         }
     }
-
 
     @Override
     public void run(String... args) throws Exception {
         loadUserData();
 
-        Authority adminRole = authorityRepository.findByRole("ROLE_ADMIN")
-                .orElseThrow(() -> new RuntimeException("Admin role not found"));
-
-        Authority guestRole = authorityRepository.findByRole("ROLE_GUEST")
-                .orElseThrow(() -> new RuntimeException("Guest role not found"));
-
-        List<Persoane> persoane = persoaneRepo.findAll();
+       /* List<Persoane> persoane = persoaneRepo.findAll();
 
         for (Persoane persoana : persoane) {
             String username = persoana.getUzr();
@@ -70,10 +67,10 @@ public class DataLoader implements CommandLineRunner {
             Authority role;
 
             if ("elvantin".equals(username)) {
-                role = adminRole;
+                role = authorityRepository.findByRole("ROLE_ADMIN").orElseGet(() -> authorityRepository.save(Authority.builder().role("ROLE_ADMIN").build()));
                 persoana.setRol("ROLE_ADMIN");
             } else {
-                role = guestRole;
+                role = authorityRepository.findByRole("ROLE_GUEST").orElseGet(() -> authorityRepository.save(Authority.builder().role("ROLE_GUEST").build()));
                 persoana.setRol("ROLE_GUEST");
             }
 
@@ -85,7 +82,8 @@ public class DataLoader implements CommandLineRunner {
 
             userRepository.save(user);
             persoaneRepo.save(persoana);
-        }
+        }*/
     }
+
 
 }

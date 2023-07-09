@@ -21,9 +21,15 @@ public class User {
     private String username;
     private String password;
 
-    @OneToOne
-    private Authority authority;
+    @Column(name = "nume")
+    private String nume;
 
+    @Column(name = "prenume")
+    private String prenume;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "authority_id", referencedColumnName = "id")
+    private Authority authority;
 
     @Builder.Default
     private Boolean enabled = true;

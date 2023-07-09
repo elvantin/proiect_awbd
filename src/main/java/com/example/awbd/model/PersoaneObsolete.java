@@ -1,3 +1,4 @@
+/*
 package com.example.awbd.model;
 
 import jakarta.persistence.*;
@@ -50,3 +51,6 @@ public class Persoane {
         this.parola = parola;
     }
   }
+*/
+
+public class PersoaneObsolete {}

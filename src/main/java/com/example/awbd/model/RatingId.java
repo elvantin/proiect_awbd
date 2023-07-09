@@ -1,5 +1,6 @@
 package com.example.awbd.model;
 
+import com.example.awbd.model.security.User;
 import lombok.*;
 
 import java.io.Serializable;
@@ -11,6 +12,6 @@ import java.io.Serializable;
 @EqualsAndHashCode
 public class RatingId implements Serializable {
 
-    private Persoane persoane;
-    private Audiotrack audiotrack;
+    private Integer idPersoana;
+    private Long idAudiotrack;
 }

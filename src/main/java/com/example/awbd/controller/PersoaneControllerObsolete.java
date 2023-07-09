@@ -1,3 +1,4 @@
+/*
 package com.example.awbd.controller;
 
 import com.example.awbd.model.Persoane;
@@ -72,3 +73,5 @@ public class PersoaneController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
+*/
+public class PersoaneControllerObsolete {}
