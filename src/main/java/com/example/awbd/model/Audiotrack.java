@@ -49,10 +49,13 @@ public class Audiotrack {
     @JsonIgnore
     private Lyrics lyrics;
 
+    @OneToMany(mappedBy = "audiotrack", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Rating> ratings;
+
     public Audiotrack(Long id_artist, String titlu_piesa, Long id_album, String durata) {
         this.id_artist = id_artist;
         this.titlu_piesa = titlu_piesa;
         this.id_album = id_album;
         this.durata = durata;
-            }
+    }
 }

@@ -1,6 +1,7 @@
 package com.example.awbd.model;
 
 import com.example.awbd.model.security.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,17 +15,13 @@ import lombok.*;
 @IdClass(RatingId.class)
 public class Rating {
 
-    /*@Id
-    @ManyToOne
-    @JoinColumn(name = "id_persoane")
-    private Persoane persoane;*/
-
     @Id
     @Column(name = "id_persoana")
     private Integer idPersoana;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_persoana", referencedColumnName = "id", insertable = false, updatable = false)
+    @JsonIgnore
     private User persoana;
 
     @Id
@@ -33,8 +30,15 @@ public class Rating {
 
     @ManyToOne
     @JoinColumn(name = "id_audiotrack", referencedColumnName = "id", insertable = false, updatable = false)
+    @JsonIgnore
     private Audiotrack audiotrack;
 
     @Column(name = "rating")
     private int rating;
+
+    public Rating(Integer idPersoana, Long idAudiotrack, int rating) {
+        this.idPersoana = idPersoana;
+        this.idAudiotrack = idAudiotrack;
+        this.rating = rating;
+    }
 }

@@ -7,51 +7,10 @@
   <script src="/webjars/jquery/3.5.1/jquery.min.js"></script>
   <script src="/webjars/bootstrap/4.5.0/js/bootstrap.min.js"></script>
   <link rel="stylesheet" href="/webjars/font-awesome/6.4.0/css/all.min.css"/>
-  <link rel="stylesheet" href="/resources/static/css/custom.css"/>
-  <style>
-    .teal-bar {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: #dafda6;
-      margin-bottom: 10px;
-    }
-    .teal-bar a {
-      display: inline-block;
-      color: #131e75;
-      padding: 10px;
-    }
-    .teal-bar a:hover {
-      background-color: #ff8c00;
-    }
-    .teal-bar i {
-      margin-right: 5px;
-    }
-    .title {
-      color: purple;
-      text-align: center;
-    }
-    .subtitle {
-      color: red;
-      text-align: center;
-    }
-    .card {
-      border: 2px solid #ccc;
-      border-radius: 10px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
-    }
-    .card-body {
-      padding: 10px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    th, td {
-      padding: 8px;
-      border: 1px solid #ccc;
-    }
-  </style>
+  <link rel="stylesheet" th:href="@{/css/custom.css}"/>
+  <link th:rel="stylesheet" th:href="@{/assets/bootstrapless-star-rating/star-rating.min.css}"/>
+  <link th:rel="stylesheet" th:href="@{/assets/bootstrapless-star-rating/krajee-svg/theme.min.css}"/>
+
 </head>
 <body>
 <div class="container">
@@ -76,18 +35,26 @@
               <th>Durata</th>
               <th>ID Artist</th>
               <th>ID Album</th>
+              <th>Rating</th>
               <th>&nbsp;</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="audiotrack : ${audiotracks}">
-              <td th:text="${audiotrack.getArtist().nume}"></td>
-              <td th:text="${audiotrack.getAlbum().titlu_album}"></td>
-              <td th:text="${audiotrack.titlu_piesa}"></td>
-              <td th:text="${audiotrack.durata}"></td>
-              <td th:text="${audiotrack.id_artist}"></td>
-              <td th:text="${audiotrack.id_album}"></td>
-              <td><a class="versuri" data-id="${audiotrack.id}" th:href="@{/show-lyrics/{id}(id=${audiotrack.id})}">Versuri</a></td>
+            <tr th:each="audiotrack : ${audiotrackratings}">
+              <td th:text="${audiotrack.getAudiotrack().getArtist().nume}"></td>
+              <td th:text="${audiotrack.getAudiotrack().getAlbum().titlu_album}"></td>
+              <td th:text="${audiotrack.getAudiotrack().titlu_piesa}"></td>
+              <td th:text="${audiotrack.getAudiotrack().durata}"></td>
+              <td th:text="${audiotrack.getAudiotrack().id_artist}"></td>
+              <td th:text="${audiotrack.getAudiotrack().id_album}"></td>
+              <td>
+                <form  th:action="@{/show-audiotracks/rate}" method="post" class="mt-5">
+                  <input type="hidden" name="_method" value="put">
+                  <input name="idAudiotrack" type="hidden" th:value="${audiotrack.getAudiotrack().id}"/>
+                  <input name="rating" type="number" class="rating" th:value="${audiotrack.getRating()}"/>
+                </form>
+              </td>
+              <td><a class="versuri" data-id="${audiotrack.id}" th:href="@{/show-lyrics/{id}(id=${audiotrack.getAudiotrack().id})}">Versuri</a></td>
             </tr>
             </tbody>
           </table>
@@ -97,4 +64,20 @@
   </div>
 </div>
 </body>
+
+<script>
+  $(document).ready(function() {
+    // with plugin options
+    $(".rating").rating({theme:'krajee-svg', min:1, max:5, step:1, size:'sm'})
+                  .on("rating:change", function(event, value, caption) {
+                    $(event.target.form).submit();
+                  })
+                  .on("rating:clear", function(event, value, caption) {
+                    $(event.target.form).submit();
+                  });
+  });
+</script>
+
+<script th:src="@{/assets/bootstrapless-star-rating/star-rating.min.js}"></script>
+<script th:src="@{/assets/bootstrapless-star-rating/krajee-svg/theme.min.js}"></script>
 </html>

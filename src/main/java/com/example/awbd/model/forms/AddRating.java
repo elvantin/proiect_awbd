@@ -6,7 +6,6 @@ import lombok.Setter;
 @Setter
 @Getter
 public class AddRating {
-    private Integer idUser;
     private Long idAudiotrack;
-    private int rating;
+    private String rating;
 }
