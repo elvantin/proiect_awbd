@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
@@ -28,25 +29,10 @@ public class SecurityJpaConfig {
         this.userDetailsService = userDetailsService;
     }
 
-    // creare bean BCryptPasswordEncoder
+    // creare bean NoOpPasswordEncoder
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    // creare UserDetailsService si config in-memory user details.
-    @Bean
-    public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
-        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-        manager.createUser(User.withUsername("guest")
-                .password(passwordEncoder.encode("password"))
-                .roles("USER")
-                .build());
-        manager.createUser(User.withUsername("admin")
-                .password(passwordEncoder.encode("Password1"))
-                .roles("USER", "ADMIN")
-                .build());
-        return manager;
+        return NoOpPasswordEncoder.getInstance();
     }
 
     // security chain:
@@ -57,15 +43,17 @@ public class SecurityJpaConfig {
                 .cors().disable()
                 .exceptionHandling().and()
                 .authorizeRequests(auth -> auth
-                        .requestMatchers("/artists").authenticated()
-                        .requestMatchers("/audioAlbums").authenticated()
-                        .requestMatchers("/audiotracks").authenticated()
-                        .requestMatchers("/lyrics").authenticated()
+                        .requestMatchers("/h2-console/**").hasAuthority("ADMIN")
                         .requestMatchers("/login").permitAll()
-                        .requestMatchers("/main/**").authenticated()
+                        .requestMatchers("/admin-**").hasAuthority("ADMIN")
+                        .requestMatchers("/show-**").hasAnyAuthority("ADMIN", "USER")
                 )
-                .userDetailsService(userDetailsService(passwordEncoder()))
+                .userDetailsService(this.userDetailsService)
                 .headers(headers -> headers.frameOptions().sameOrigin())
+                .formLogin().loginPage("/login").loginProcessingUrl("/perform_login").defaultSuccessUrl("/", true)
+                .and()
+                .exceptionHandling().accessDeniedPage("/access_denied")
+                .and()
                 .httpBasic(withDefaults())
                 .build();
     }
