@@ -11,31 +11,35 @@ import java.util.Properties;
 @Configuration
 public class MvcConfiguration implements WebMvcConfigurer {
 
+    // creare si configurare bean SimpleMappingExceptionResolver
     @Bean(name="simpleMappingExceptionResolver")
-    public SimpleMappingExceptionResolver
-    getSimpleMappingExceptionResolver() {
-        SimpleMappingExceptionResolver r =  new SimpleMappingExceptionResolver();
+    public SimpleMappingExceptionResolver getSimpleMappingExceptionResolver() {
+        SimpleMappingExceptionResolver resolver = new SimpleMappingExceptionResolver();
 
-        r.setDefaultErrorView("defaultException");
-        r.setExceptionAttribute("ex");     // default "exception"
+        // setare eroare default: "defaultException".
+        resolver.setDefaultErrorView("defaultException");
 
+        //seteaza numele objectului in "ex"
+        resolver.setExceptionAttribute("ex");
+
+        // configurare mapare exceptii pt diferite view-uri
         Properties mappings = new Properties();
         mappings.setProperty("NumberFormatException", "numberFormatException");
-        r.setExceptionMappings(mappings);
+        resolver.setExceptionMappings(mappings);
 
+        // configurare coduri de stare
         Properties statusCodes = new Properties();
         statusCodes.setProperty("NumberFormatException", "400");
-        r.setStatusCodes(statusCodes);
+        resolver.setStatusCodes(statusCodes);
 
-
-        return r;
+        return resolver;
     }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        // creare resource handler pt toate "/webjars/**" si mapare la "/webjars/".
         registry
                 .addResourceHandler("/webjars/**")
                 .addResourceLocations("/webjars/");
     }
-
 }

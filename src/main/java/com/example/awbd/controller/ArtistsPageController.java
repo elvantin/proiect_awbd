@@ -19,9 +19,11 @@ public class ArtistsPageController {
 
     @Autowired
     private ArtistRepo artistRepo;
+
+    // GET request pt "/show-artists"
     @RequestMapping({"", "/"})
     public ModelAndView getHome() {
-        ModelAndView modelAndView =new ModelAndView("artists");
+        ModelAndView modelAndView = new ModelAndView("artists");
         List<Artist> artistList = new ArrayList<>(artistRepo.findAll());
         modelAndView.addObject("artists", artistList);
         return modelAndView;

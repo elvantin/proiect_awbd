@@ -20,20 +20,25 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-// Annotation to utilize Mockito's features
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+// anotare pt mockito
 @ExtendWith(MockitoExtension.class)
 public class ArtistControllerTest {
 
-    @InjectMocks  // Sets up the ArtistController object with a mock ArtistRepo
+    private static final Logger log = LoggerFactory.getLogger(ArtistControllerTest.class);
+
+    @InjectMocks  // injectare
     private ArtistController artistController;
 
-    @Mock  // Creates a mock instance of ArtistRepo
+    @Mock  // creare instanta mock artistrepo
     private ArtistRepo artistRepo;
 
     private Artist artist1;
     private Artist artist2;
 
-    @BeforeEach  // This method will be called before each test case
+    @BeforeEach  // metoda apelata inainte de fiecare test
     void setup() {
         artist1 = new Artist(1L, "Artist1", null, null);
         artist2 = new Artist(2L, "Artist2", null, null);
@@ -41,40 +46,37 @@ public class ArtistControllerTest {
 
     @Test
     void getAllArtists() {
-        // Define behavior of artistRepo mock
+        // definire comportament
         when(artistRepo.findAll()).thenReturn(Arrays.asList(artist1, artist2));
 
-        // Call method to be tested
+        // apleare metoda
         ResponseEntity<List<Artist>> result = artistController.getAllArtists();
 
-        // Check results
+        // verificare rezultate
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertEquals(2, result.getBody().size());
         assertEquals("Artist1", result.getBody().get(0).getNume());
         assertEquals("Artist2", result.getBody().get(1).getNume());
 
-        // Verify mock interaction
+        // verificare mock
         verify(artistRepo, times(1)).findAll();
     }
 
     @Test
     void getArtistById() {
-        // Define behavior of artistRepo mock
         when(artistRepo.findById(1L)).thenReturn(Optional.of(artist1));
 
-        // Call method to be tested
         ResponseEntity<Artist> result = artistController.getArtistById(1L);
 
-        // Check results
         assertEquals(HttpStatus.OK, result.getStatusCode());
         assertEquals("Artist1", result.getBody().getNume());
 
-        // Verify mock interaction
         verify(artistRepo, times(1)).findById(1L);
     }
 
     @Mock
     private BindingResult bindingResult;
+
     @Test
     void addArtist() {
         when(bindingResult.hasErrors()).thenReturn(false);

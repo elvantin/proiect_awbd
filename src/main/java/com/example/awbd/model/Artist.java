@@ -33,5 +33,3 @@ public class Artist {
         this.nume = nume;
     }
 }
-
-

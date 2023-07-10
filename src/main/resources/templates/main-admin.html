@@ -31,22 +31,22 @@
       align-content: center;
     }
     .nav-link:nth-child(1):hover .fas {
-      animation: rotate 1s infinite;
+      animation: rotate 0.75s infinite;
     }
     .nav-link:nth-child(2):hover .fas {
-      animation: flip 1s infinite;
+      animation: rotate 0.75s infinite;
     }
     .nav-link:nth-child(3):hover .fas {
-      animation: pulse 0.75s infinite linear;
+      animation: flip 1s infinite;
     }
     .nav-link:nth-child(4):hover .fas {
-      animation: shake 0.75s infinite;
+      animation: pulse 0.75s infinite linear;
     }
     .nav-link:nth-child(5):hover .fas {
-      animation: scale 0.5s infinite;
+      animation: shake 0.75s infinite;
     }
     .nav-link:nth-child(6):hover .fas {
-      animation: rotate 1s reverse;
+      animation: rotate 0.75s reverse;
     }
     @keyframes scale {
       0% {        transform: scale(1);
@@ -94,11 +94,12 @@
 <body>
 <div class="container">
   <div class="teal-bar">
+    <a class="nav-link" th:href="@{'/login'}" title="Login"> <i class="fas fa-person-walking-luggage" style="color: #883493";></i> Login </a>
     <a class="nav-link" th:href="@{'/'}" title="Acasă"> <i class="fas fa-couch mx-1"></i> Acasă </a>
-    <a class="nav-link" th:href="@{'/admin-utilizatori'}" title="Utilizatori"> <i class="fas fa-user-secret mx-1"></i> Utilizatori </a>
     <a class="nav-link" th:href="@{'/admin-artists'}" title="Artiști"> <i class="fas fa-users-between-lines"></i> Artiști </a>
     <a class="nav-link" th:href="@{'/admin-audioalbums'}" title="Albume"> <i class="fas fa-record-vinyl"></i> Albume </a>
     <a class="nav-link" th:href="@{'/admin-audiotracks'}" title="Melodii"> <i class="fas fa-headphones"></i> Melodii </a>
+    <a class="nav-link" th:href="@{'/logout'}" title="Logout"> <i class="fa-solid fa-person-walking-arrow-right"></i> Logout </a>
   </div>
 </div>
 <div class="container">

@@ -21,6 +21,7 @@ public class ArtistController {
     @Autowired
     private ArtistRepo artistRepo;
 
+    // GET request artisti.
     @GetMapping
     public ResponseEntity<List<Artist>> getAllArtists() {
         try {
@@ -37,6 +38,7 @@ public class ArtistController {
         }
     }
 
+    // GET request pt artist dupa ID.
     @GetMapping("/{id}")
     public ResponseEntity<Artist> getArtistById(@PathVariable Long id) {
         Optional<Artist> artistData = artistRepo.findById(id);
@@ -45,6 +47,7 @@ public class ArtistController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    // POST request adaugare artist
     @PostMapping
     //@PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Artist> addArtist(@Validated @RequestBody Artist artist, BindingResult bindingResult) {
@@ -53,7 +56,7 @@ public class ArtistController {
         }
 
         try {
-            artist.setId(null);  // asigură-te că id-ul este null
+            artist.setId(null);  // Ensure that the ID is null
             Artist artistObject = artistRepo.save(artist);
             return new ResponseEntity<>(artistObject, HttpStatus.CREATED);
         } catch (Exception ex) {
@@ -61,6 +64,7 @@ public class ArtistController {
         }
     }
 
+    // PUT request update artist dupa ID.
     @PutMapping("/{id}")
     public ResponseEntity<Artist> updateArtistById(@PathVariable Long id, @RequestBody Artist newArtistData) {
         Optional<Artist> oldArtistData = artistRepo.findById(id);
@@ -72,10 +76,10 @@ public class ArtistController {
             Artist artistObject = artistRepo.save(updatedArtistData);
             return new ResponseEntity<>(artistObject, HttpStatus.OK);
         }
-
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    // DELETE request stergere artist dupa ID.
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteArtistById(@PathVariable Long id) {
         try {
@@ -86,6 +90,3 @@ public class ArtistController {
         }
     }
 }
-
-
-

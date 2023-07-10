@@ -19,25 +19,30 @@ public class AdminArtistsPageController {
 
     @Autowired
     private ArtistRepo artistRepo;
+
+    // GET request admin-artists
     @RequestMapping({"", "/"})
     public ModelAndView getHome() {
-        ModelAndView modelAndView =new ModelAndView("admin-artists"); // The html page name
+        ModelAndView modelAndView = new ModelAndView("admin-artists"); // The html page name
         List<Artist> artistList = new ArrayList<>(artistRepo.findAll());
         modelAndView.addObject("artists", artistList); // To be used in the html page
         return modelAndView;
     }
 
+    // POST request creare artist
     @PostMapping("/add")
     public ModelAndView addArtistAndSubmit(@ModelAttribute AddArtist addArtist) {
         artistRepo.save(new Artist(addArtist.getNume()));
 
-        ModelAndView modelAndView =new ModelAndView("admin-artists"); // The html page name
+        ModelAndView modelAndView = new ModelAndView("admin-artists"); // The html page name
         List<Artist> artistList = new ArrayList<>(artistRepo.findAll());
         modelAndView.addObject("artists", artistList); // To be used in the html page
 
         modelAndView = new ModelAndView("redirect:/admin-artists");
         return modelAndView;
     }
+
+    // POST request updatare artist.
     @PostMapping("/update")
     public ModelAndView updateArtist(@ModelAttribute Artist artist) {
         Optional<Artist> optionalArtist = artistRepo.findById(artist.getId());
@@ -46,15 +51,15 @@ public class AdminArtistsPageController {
             existingArtist.setNume(artist.getNume());
             artistRepo.save(existingArtist);
         }
-
         ModelAndView modelAndView = new ModelAndView("redirect:/admin-artists");
         return modelAndView;
     }
+
+    // POST request stergere artist.
     @PostMapping("/delete")
     public ModelAndView deleteArtist(@RequestParam Long id) {
         artistRepo.deleteById(id);
         ModelAndView modelAndView = new ModelAndView("redirect:/admin-artists");
         return modelAndView;
     }
-
 }

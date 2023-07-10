@@ -22,7 +22,8 @@ public class AdminAlbumPageController {
     @Autowired
     private AudioAlbumRepo audioAlbumRepo;
 
-     @RequestMapping({"", "/"})
+    // GET request pt admin-audioalbums
+    @RequestMapping({"", "/"})
     public ModelAndView getHome() {
         ModelAndView modelAndView = new ModelAndView("admin-audioalbums");
         List<AudioAlbum> audioAlbumList = new ArrayList<>(audioAlbumRepo.findAll());
@@ -30,6 +31,7 @@ public class AdminAlbumPageController {
         return modelAndView;
     }
 
+    // POST request pt adaugare album.
     @PostMapping("/add")
     public ModelAndView addAudioAlbumAndSubmit(@ModelAttribute AddAudioAlbum addAudioAlbum) {
         audioAlbumRepo.save(new AudioAlbum(addAudioAlbum.getTitlu_album(), addAudioAlbum.getId_artist(), addAudioAlbum.getAn()));
@@ -42,6 +44,7 @@ public class AdminAlbumPageController {
         return modelAndView;
     }
 
+    // POST request pt update album.
     @PostMapping("/update")
     public ModelAndView updateAudioAlbum(@ModelAttribute AudioAlbum audioAlbum) {
         Optional<AudioAlbum> optionalAudioAlbum = audioAlbumRepo.findById(audioAlbum.getId());
@@ -55,25 +58,12 @@ public class AdminAlbumPageController {
         ModelAndView modelAndView = new ModelAndView("redirect:/admin-audioalbums");
         return modelAndView;
     }
+
+    // POST request delete
     @PostMapping("/delete")
     public ModelAndView deleteAudioAlbum(@RequestParam Long id) {
         audioAlbumRepo.deleteById(id);
         ModelAndView modelAndView = new ModelAndView("redirect:/admin-audioalbums");
         return modelAndView;
     }
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

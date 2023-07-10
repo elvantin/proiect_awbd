@@ -14,11 +14,6 @@ import lombok.*;
 @IdClass(RatingId.class)
 public class Rating {
 
-    /*@Id
-    @ManyToOne
-    @JoinColumn(name = "id_persoane")
-    private Persoane persoane;*/
-
     @Id
     @Column(name = "id_persoana")
     private Integer idPersoana;

@@ -31,50 +31,26 @@ public class SecurityConfigH2 {
         this.userDetailsService = userDetailsService;
     }
 
-    /*@Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }*/
-
+    // creare bean NoOpPasswordEncoder
     @Bean
     public PasswordEncoder passwordEncoder() {
         return NoOpPasswordEncoder.getInstance();
     }
 
-  /*  @Bean
-    public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
-        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-        manager.createUser(User.withUsername("guest")
-                .password(passwordEncoder.encode("password"))
-                .roles("USER")
-                .build());
-        manager.createUser(User.withUsername("admin")
-                .password(passwordEncoder.encode("Password1"))
-                .roles("USER", "ADMIN")
-                .build());
-        return manager;
-    }*/
-
+    // bean securityfilterchanin:
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                //.csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
                 .csrf().disable()
                 .cors().disable()
                 .exceptionHandling().and()
                 .authorizeRequests(auth -> auth
-                                .requestMatchers("/h2-console/**").hasAuthority("ADMIN")
-                                .requestMatchers("/login").permitAll()
-                                .requestMatchers("/admin-**").hasAuthority("ADMIN")
-                                .requestMatchers("/show-**").hasAnyAuthority("ADMIN", "USER")
-                        //.anyRequest().authenticated()
+                        .requestMatchers("/h2-console/**").hasAuthority("ADMIN")
+                        .requestMatchers("/login").permitAll()
+                        .requestMatchers("/admin-**").hasAuthority("ADMIN")
+                        .requestMatchers("/show-**").hasAnyAuthority("ADMIN", "USER")
                 )
                 .userDetailsService(this.userDetailsService)
-                //.authorizeRequests(auth -> auth
-                //        .requestMatchers("/h2-console/**").permitAll()
-                //        .requestMatchers("/main/**").permitAll()
-                //        .anyRequest().authenticated()
-                //)
                 .headers(headers -> headers.frameOptions().sameOrigin())
                 .formLogin().loginPage("/login").loginProcessingUrl("/perform_login").defaultSuccessUrl("/", true)
                 .and()

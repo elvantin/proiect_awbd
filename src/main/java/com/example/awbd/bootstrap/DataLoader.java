@@ -25,65 +25,22 @@ public class DataLoader implements CommandLineRunner {
         this.passwordEncoder = passwordEncoder;
     }
 
+    // incarca datele utilizatorilor si ia actiune daca repo-ul e gol
     private void loadUserData() {
         if (userRepository.count() == 0) {
+            // vezi daca exista ROLE_ADMIN in authority repository, daca nu, il cream.
             Authority adminRole = authorityRepository.findByRole("ROLE_ADMIN")
                     .orElseGet(() -> authorityRepository.save(Authority.builder().role("ROLE_ADMIN").build()));
 
+            // la fel pentru ROLE_GUEST
             Authority guestRole = authorityRepository.findByRole("ROLE_GUEST")
                     .orElseGet(() -> authorityRepository.save(Authority.builder().role("ROLE_GUEST").build()));
 
-            User admin = User.builder()
-                    .username("admin")
-                    .password(passwordEncoder.encode("Password1"))
-                    .authority(null)
-                    .build();
-
-            User guest = User.builder()
-                    .username("guest")
-                    .password(passwordEncoder.encode("password"))
-                    .authority(null)
-                    .build();
-
-            admin = userRepository.save(admin);
-            admin.setAuthority(adminRole);
-            admin = userRepository.save(admin);
-
-            guest = userRepository.save(guest);
-            guest.setAuthority(guestRole);
-            guest = userRepository.save(guest);
         }
     }
-
     @Override
     public void run(String... args) throws Exception {
+        // apeleaza metoda la pornire
         loadUserData();
-
-       /* List<Persoane> persoane = persoaneRepo.findAll();
-
-        for (Persoane persoana : persoane) {
-            String username = persoana.getUzr();
-            String password = persoana.getParola();
-            Authority role;
-
-            if ("elvantin".equals(username)) {
-                role = authorityRepository.findByRole("ROLE_ADMIN").orElseGet(() -> authorityRepository.save(Authority.builder().role("ROLE_ADMIN").build()));
-                persoana.setRol("ROLE_ADMIN");
-            } else {
-                role = authorityRepository.findByRole("ROLE_GUEST").orElseGet(() -> authorityRepository.save(Authority.builder().role("ROLE_GUEST").build()));
-                persoana.setRol("ROLE_GUEST");
-            }
-
-            User user = User.builder()
-                    .username(username)
-                    .password(passwordEncoder.encode(password))
-                    .authority(role)
-                    .build();
-
-            userRepository.save(user);
-            persoaneRepo.save(persoana);
-        }*/
     }
-
-
 }

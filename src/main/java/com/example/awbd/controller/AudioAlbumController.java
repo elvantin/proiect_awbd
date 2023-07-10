@@ -20,6 +20,7 @@ public class AudioAlbumController {
     @Autowired
     private AudioAlbumRepo audioAlbumRepo;
 
+    // GET request toate albumele
     @GetMapping
     public ResponseEntity<List<AudioAlbum>> getAllAudioAlbums() {
         try {
@@ -35,6 +36,7 @@ public class AudioAlbumController {
         }
     }
 
+    // GET request album dupa id
     @GetMapping("/{id}")
     public ResponseEntity<AudioAlbum> getAudioAlbumById(@PathVariable Long id) {
         Optional<AudioAlbum> audioAlbumData = audioAlbumRepo.findById(id);
@@ -43,6 +45,7 @@ public class AudioAlbumController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    // POST request adaugare album.
     @PostMapping
     public ResponseEntity<AudioAlbum> addAudioAlbum(@Validated @RequestBody AudioAlbum audioAlbum, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -57,6 +60,7 @@ public class AudioAlbumController {
         }
     }
 
+    // PUT request update album
     @PutMapping("/{id}")
     public ResponseEntity<AudioAlbum> updateAudioAlbumById(@PathVariable Long id, @RequestBody AudioAlbum newAudioAlbumData) {
         Optional<AudioAlbum> oldAlbumData = audioAlbumRepo.findById(id);
@@ -74,6 +78,7 @@ public class AudioAlbumController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    // DELETE request stergere
     @DeleteMapping("/{id}")
     public ResponseEntity<HttpStatus> deleteAudioAlbumById(@PathVariable Long id) {
         try {

@@ -13,9 +13,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 public class AudioAlbumControllerIntegrationTest {
+
+    private static final Logger log = LoggerFactory.getLogger(AudioAlbumControllerIntegrationTest.class);
 
     @Autowired
     private MockMvc mockMvc;
@@ -30,28 +35,31 @@ public class AudioAlbumControllerIntegrationTest {
     public void testCreateUpdateAndDeleteAudioAlbum() throws Exception {
         AudioAlbum audioAlbum = new AudioAlbum("Test Album", 1L, 2023);
 
-        // Create a new audio album
+        // creare album nou
         String response = mockMvc.perform(post("/audioalbums")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(audioAlbum)))
                 .andExpect(status().isCreated())
                 .andReturn().getResponse().getContentAsString();
 
-        // Extract the album ID from the response
+        // extragere id din raspuns
         AudioAlbum createdAlbum = objectMapper.readValue(response, AudioAlbum.class);
         Long id = createdAlbum.getId();
+        log.info("Created audio album with ID: " + id);
 
-        // Update the album
+        // updatare album
         AudioAlbum updatedAlbum = new AudioAlbum("Updated Test Album", 2L, 2024);
         updatedAlbum.setId(id);
         mockMvc.perform(put("/audioalbums/" + id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updatedAlbum)))
                 .andExpect(status().isOk());
+        log.info("Updated audio album with ID: " + id);
 
-        // Delete the album
+        // stergere album
         mockMvc.perform(delete("/audioalbums/" + id)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
+        log.info("Deleted audio album with ID: " + id);
     }
 }

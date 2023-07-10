@@ -29,25 +29,40 @@ public class JpaUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user;
+        try {
+            User user;
 
-        Optional<User> userOpt = userRepository.findByUsername(username);
-        if (userOpt.isPresent())
-            user = userOpt.get();
-        else
-            throw new UsernameNotFoundException("Username: " + username);
+            // ia utilizatorii din repo dupa username
+            Optional<User> userOpt = userRepository.findByUsername(username);
+            if (userOpt.isPresent())
+                user = userOpt.get();
+            else
+                throw new UsernameNotFoundException("Username: " + username);
 
-        log.info(user.toString());
+            // logare informatii user
+            log.info(user.toString());
 
-        Set<Authority> authorities = new HashSet<>();
-        authorities.add(user.getAuthority()); // Assuming your User only has one Authority
+            Set<Authority> authorities = new HashSet<>();
+            authorities.add(user.getAuthority());
 
-        return new org.springframework.security.core.userdetails.User(user.getUsername(),
-                user.getPassword(), user.getEnabled(), user.getAccountNotExpired(),
-                user.getCredentialsNotExpired(), user.getAccountNotLocked(), getAuthorities(authorities));
+            // creare&afisare obiect UserDetails cu informatii despre user +autorizari
+            return new org.springframework.security.core.userdetails.User(user.getUsername(),
+                    user.getPassword(), user.getEnabled(), user.getAccountNotExpired(),
+                    user.getCredentialsNotExpired(), user.getAccountNotLocked(), getAuthorities(authorities));
+        }
+        catch (UsernameNotFoundException unf){
+            // logare exceptie daca nu gaseste user si aruncarea ei
+            log.error(unf.toString());
+            throw unf;
+        }
+        catch (Exception ex){
+            // logare exceptie si aruncarea ei
+            log.error(ex.toString());
+            throw ex;
+        }
     }
 
-
+    // mapare autorizari la obiectele  din GrantedAuthority
     private Collection<? extends GrantedAuthority> getAuthorities(Set<Authority> authorities) {
         if (authorities == null) {
             return new HashSet<>();

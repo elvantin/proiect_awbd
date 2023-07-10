@@ -1,6 +1,5 @@
 package com.example.awbd.config;
 
-
 import com.example.awbd.services.security.JpaUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,11 +28,13 @@ public class SecurityJpaConfig {
         this.userDetailsService = userDetailsService;
     }
 
+    // creare bean BCryptPasswordEncoder
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    // creare UserDetailsService si config in-memory user details.
     @Bean
     public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
         InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
@@ -48,6 +49,7 @@ public class SecurityJpaConfig {
         return manager;
     }
 
+    // security chain:
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
@@ -55,25 +57,16 @@ public class SecurityJpaConfig {
                 .cors().disable()
                 .exceptionHandling().and()
                 .authorizeRequests(auth -> auth
-                                .requestMatchers("/artists").authenticated()
-                                .requestMatchers("/audioAlbums").authenticated()
-                                .requestMatchers("/audiotracks").authenticated()
-                                .requestMatchers("/lyrics").authenticated()
-                                .requestMatchers("/login").permitAll()
-                                .requestMatchers("/main/**").authenticated()
-                        //.anyRequest().authenticated()
+                        .requestMatchers("/artists").authenticated()
+                        .requestMatchers("/audioAlbums").authenticated()
+                        .requestMatchers("/audiotracks").authenticated()
+                        .requestMatchers("/lyrics").authenticated()
+                        .requestMatchers("/login").permitAll()
+                        .requestMatchers("/main/**").authenticated()
                 )
-                //.userDetailsService(userDetailsService)
                 .userDetailsService(userDetailsService(passwordEncoder()))
-                //.formLogin()
-                //.loginPage("/login")
-                //.loginProcessingUrl("/perform_login")
-                //.and()
-                //.accessDeniedPage("/access_denied")
-                //.and()
                 .headers(headers -> headers.frameOptions().sameOrigin())
                 .httpBasic(withDefaults())
                 .build();
     }
 }
-

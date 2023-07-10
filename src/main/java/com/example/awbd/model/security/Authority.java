@@ -27,9 +27,8 @@ public class Authority {
     @OneToMany(mappedBy = "authority", fetch = FetchType.LAZY, orphanRemoval = true)
     @JsonIgnore
     @JsonBackReference // adnotare pt bidirectionalitate
-    private List<User> users;
+    private List<User> users; // lista utilizatori asociata cu authority
 
-    // Overriding toString() method of String class
     @Override
     public String toString() {
         return "[" + this.id + "] " + this.role;
