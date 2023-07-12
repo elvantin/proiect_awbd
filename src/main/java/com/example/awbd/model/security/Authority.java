@@ -19,6 +19,7 @@ import java.util.List;
 public class Authority {
 
     @Id
+    @Column (name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 

@@ -93,6 +93,7 @@ INSERT INTO authority(role) VALUES('ADMIN');
 INSERT INTO authority(role) VALUES('USER');
 
 INSERT INTO app_user (username, nume, prenume, password, authority_id, account_not_expired, account_not_locked, credentials_not_expired, enabled) VALUES ('a', 'TITA', 'Valentin', 'aaaaa', 1, 1, 1, 1, 1);
+INSERT INTO app_user (username, nume, prenume, password, authority_id, account_not_expired, account_not_locked, credentials_not_expired, enabled) VALUES ('b', 'TITA', 'Valentin', 'bbbbb', 2, 1, 1, 1, 1);
 INSERT INTO app_user (username, nume, prenume, password, authority_id, account_not_expired, account_not_locked, credentials_not_expired, enabled) VALUES ('elvantin@gmail.com', 'TITA', 'Valentin', 'ElvantinPa$$', 1, 1, 1, 1, 1);
 INSERT INTO app_user (username, nume, prenume, password, authority_id, account_not_expired, account_not_locked, credentials_not_expired, enabled) VALUES ('ionut78@example.com', 'Ionescu', 'Ionut', 'parolaionut', 2, 1, 1, 1, 1);
 INSERT INTO app_user (username, nume, prenume, password, authority_id, account_not_expired, account_not_locked, credentials_not_expired, enabled) VALUES ('marius23@example.com', 'Popa', 'Marius', 'parolamarius', 2, 1, 1, 1, 1);

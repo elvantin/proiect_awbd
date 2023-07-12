@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-@Profile("h2")
+@Profile("mysql")
 public class DataLoader implements CommandLineRunner {
 
     private final AuthorityRepository authorityRepository;
